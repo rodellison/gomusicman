@@ -1,0 +1,83 @@
+# See AWS GO MOD section at this link for how this project was created..
+# https://www.serverless.com/framework/docs/providers/aws/examples/hello-world/go/
+# sls create --template aws-go-mod --path GoConchRepublicBackEnd
+
+# For full config options, check the docs:
+# https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml/
+
+service: alexa-slick-dealer
+# app and org for use with dashboard.serverless.com
+#app: your-app-name
+#org: your-org-name
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+# frameworkVersion: "=X.X.X"
+frameworkVersion: '>=1.28.0 <2.0.0'
+
+provider:
+  name: aws
+  runtime: go1.x
+  # Set the default stage used. Default is dev
+  stage: "dev"
+  # Overwrite the default region used. Default is us-east-1
+  region: "us-east-1"
+  # The default is 6 seconds. Note: API Gateway current maximum is 30 seconds
+  #timeout: 10
+  logRetentionInDays: 30 # Set the default RetentionInDays for a CloudWatch LogGroup
+  # you can ADD statements to the Lambda function's IAM Role (iamRoleStatements) here
+#  iamRoleStatements:
+#    - Effect: "Allow"
+#      Action:
+#        - "events:PutEvents"
+#      Resource: "arn:aws:events:us-east-1:619676567607:event-bus/conchrepublic"
+#    - Effect: "Allow"
+#      Action:
+#        - dynamodb:Query
+#        - dynamodb:Scan
+#        - dynamodb:GetItem
+#        - dynamodb:PutItem
+#        - dynamodb:UpdateItem
+#        - dynamodb:DeleteItem
+#      Resource: [
+#        "arn:aws:dynamodb:us-east-1:619676567607:table/FloridaKeysEvents",
+#       "arn:aws:dynamodb:us-east-1:619676567607:table/FloridaKeysEventsTest"
+#     ]
+#   - Effect: "Allow"
+#    Action:
+#        - "sns:Publish"
+#      Resource: "arn:aws:sns:*:619676567607:FloridaKeysTableUpdate"
+
+#BY DEFAULT, these logging group/events role statements come built-in
+#    - Effect: "Allow"
+#      Action:
+#        - "logs:CreateLogStream"
+#        - "logs:CreateLogGroup"
+#        - "logs:PutLogEvents"
+
+# you can define service wide environment variables here
+#environment:
+
+package:
+  exclude:
+    - ./**
+  include:
+    - ./bin/**
+
+functions:
+  main:
+    handler: bin/main
+    # Function level environment variables
+    environment:
+      #ENV values should be used to provide defaults as well as secure the Alexa skill backend code, to ensure it can only be invoked
+      #by our Alexa skill defined in the Developer console
+      AppARN: ${env:AppARN}
+      AplTemplate: ${env:AplTemplate}
+      SkillTitle: ${env:SkillTitle}
+      SmallImg: ${env:SmallImg}
+      LargeImg: ${env:LargeImg}
+    events:
+      - alexaSkill:
+          appId: ${env:AppARN}
+          enabled: true
+

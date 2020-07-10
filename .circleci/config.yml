@@ -1,0 +1,85 @@
+# Golang CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-go/ for more details
+version: 2
+jobs:
+  build_test:
+    docker:
+      # specify the version
+      - image: circleci/golang:1.13-node
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/postgres:9.4
+
+    working_directory: /go/src/github.com/rodellison/alexa-slick-dealer
+    steps:
+      - checkout
+      # specify any bash command here prefixed with `run: `
+      - run:
+          name: Get Source dependencies
+          command: |
+            go get -v -t -d ./...
+      - run:   #the Makefile test command performs both build and test
+          name: Build and Test code
+          command: |
+            make testAWS
+      - persist_to_workspace:
+          root: bin
+          paths:
+            - '*'
+
+  deploy:
+    docker:
+      # specify the version, using node varient to allow npm installation of serverless and awscli
+      - image: circleci/golang:1.13-node
+
+    working_directory: /go/src/github.com/rodellison/alexa-slick-dealer
+    steps:
+      - checkout  #checking out source for serverless content, but not building again..
+      - attach_workspace:
+          at: /go/src/github.com/rodellison/alexa-slick-dealer/bin
+      - run:
+          name: Ensure APL output json is present
+          command: |
+            ls /go/src/github.com/rodellison/alexa-slick-dealer/bin/apl_template_export.json
+      - run:
+          name: Create AWS Credentials directory  #AWS Creds to be placed in Environmental Variables
+          command: mkdir ~/.aws
+      - run:
+          name: Format AWS Credentials file  #AWS Creds to be placed in Environmental Variables
+          command: echo -e "[default]\naws_access_key_id=$AWS_ACCESS_KEY_ID_DEFAULT\naws_secret_access_key=$AWS_SECRET_ACCESS_KEY_DEFAULT\n" > ~/.aws/credentials
+      - run:
+          name: Install Serverless CLI and dependencies
+          command: |
+            sudo npm i -g serverless
+            sudo apt-get install awscli  #Note! - AWS creds need to be setup at CircleCI to deploy
+      - run:
+          name: Deploy application
+          command: |
+            pwd
+            ls -a bin
+            sls deploy --verbose
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build_test
+      - hold: # <<< the hold job is a special job that enforces a manual approval in the CircleCI web application.
+          type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
+          requires: # We only run the "hold" job when build_test has succeeded
+            - build_test
+      # On approval of the `hold` job, any successive job that requires the `hold` job will run.
+      # In this case, a user is manually triggering the deploy job.
+      - deploy:
+          requires:
+            - hold
+          filters:  #ONLY deploy when the workflow is running based on a change to the MASTER branch.. i.e. a pull request merge has occurred, and NOT just a push to any remote development branch..
+            branches:
+              only:
+                - master
+
+
+
