@@ -1,4 +1,4 @@
-module github.com/rodellison/alexa-slick-dealer
+module github.com/rodellison/gomusicman
 
 go 1.14
 

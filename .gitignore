@@ -27,3 +27,8 @@ coverage.html
 #jetbrains stuff
 .idea/
 
+#images
+images/
+
+
+

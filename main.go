@@ -1,114 +1,56 @@
 package main
 
 import (
-	"encoding/json"
-	"encoding/xml"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/rodellison/alexa-slick-dealer/alexa"
-	"io/ioutil"
-	"net/http"
-	"net/url"
+	"github.com/rodellison/gomusicman/alexa"
+	"github.com/rodellison/gomusicman/handlers"
 	"os"
 )
 
-//FeedResponse struct will be used as the type for unmarshalling external HTML data into
-type FeedResponse struct {
-	Channel struct {
-		Item []struct {
-			Title string `xml:"title"`
-			Link  string `xml:"link"`
-		} `xml:"item"`
-	} `xml:"channel"`
+var (
+	//These var definitions to help with Mock testing
+	StopCancelHandler, HelpHandler, LaunchHandler func (request alexa.Request) alexa.Response
+)
+
+func init() {
+	//Assign the real handler functions here, but override when testing..
+	StopCancelHandler = handlers.HandleStopIntent
+	HelpHandler = handlers.HandleHelpIntent
+	LaunchHandler = handlers.HandleLaunchIntent
 }
 
-//RequestFeed handles fetching external HTML site data and Unmarhalling to a struct that can be used later
-//within the respective handler functions
-func RequestFeed(mode string) (FeedResponse, error) {
-	endpoint, _ := url.Parse("https://slickdeals.net/newsearch.php")
-	queryParams := endpoint.Query()
-	queryParams.Set("mode", mode)
-	queryParams.Set("searcharea", "deals")
-	queryParams.Set("searchin", "first")
-	queryParams.Set("rss", "1")
-	endpoint.RawQuery = queryParams.Encode()
-	response, err := http.Get(endpoint.String())
-	if err != nil {
-		return FeedResponse{}, err
-	} else {
-		data, _ := ioutil.ReadAll(response.Body)
-		var feedResponse FeedResponse
-		xml.Unmarshal(data, &feedResponse)
-		return feedResponse, nil
-	}
-}
 
-//Centralized function to steer incoming alexa requests to the appropirate handler function
+//Centralized function to steer incoming alexa requests to the appropriate handler function
 func IntentDispatcher(request alexa.Request) alexa.Response {
 	var response alexa.Response
 
 	if request.Body.Type == "LaunchRequest" {
-		return HandleLaunchIntent(request)
+		return LaunchHandler(request)
 	}
 
 	switch request.Body.Intent.Name {
-	case "FrontpageDealIntent":
-		response = HandleDealIntent(request, "Frontpage", false)
-	case "PopularDealIntent":
-		response = HandleDealIntent(request, "Popular", false)
-	case alexa.YesIntent:
-		response = HandleDealIntent(request, "", true)
-	case alexa.NoIntent:
-		response = HandleHelpIntent(request)
-	case alexa.HelpIntent:
-		response = HandleHelpIntent(request)
+	//case "FrontpageDealIntent":
+	//	response = HandleDealIntent(request, "Frontpage", false)
+	//case "PopularDealIntent":
+	//	response = HandleDealIntent(request, "Popular", false)
+	//case alexa.YesIntent:
+	//	response = HandleDealIntent(request, "", true)
+	//case alexa.NoIntent:
+	//	response = HandleHelpIntent(request)
 	case alexa.StopIntent:
-		response = HandleStopIntent(request)
+		response = StopCancelHandler(request)
 	case alexa.CancelIntent:
-		response = HandleStopIntent(request)
+		response = StopCancelHandler(request)
 	case alexa.FallbackIntent:
-		response = HandleHelpIntent(request)
+		response = HelpHandler(request)
+	case alexa.HelpIntent:
+		response = HelpHandler(request)
 	}
 	return response
 }
 
-//Handler function for the initial Launch Request - when someone says.. Alexa, open slick dealer.."
-func HandleLaunchIntent(request alexa.Request) alexa.Response {
 
-	var primarySSMLText alexa.SSMLBuilder
-	var repromptSSMLText alexa.SSMLBuilder
-	var response alexa.Response
-
-	primarySSMLText.Say("Hello!, and welcome to Slick Dealer. You can ask a question like, What are the frontpage deals, or What are the popular deals.")
-	primarySSMLText.Pause("1000")
-	primarySSMLText.Say("For instructions on what you can say, please say help me.")
-	repromptSSMLText.Say("Please ask a question like, What are the frontpage deals, or What are the popular deals.")
-
-	if alexa.SupportsAPL(&request) {
-		customDisplayData := alexa.CustomDataToDisplay{
-			ItemsListContent: make([]string, 3),
-		}
-		customDisplayData.ItemsListContent[0] = "You can ask a question like, What are the front page deals, or What are the popular deals."
-
-		response = alexa.NewAPLAskResponse("Welcome to Slick Dealer",
-			primarySSMLText.Build(),
-			repromptSSMLText.Build(),
-			"You can ask a question like, What are the front page deals, or What are the popular deals.",
-			false,
-			nil,
-			"Home",
-			customDisplayData)
-	} else {
-		response = alexa.NewSimpleAskResponse("Welcome to Slick Dealer",
-			primarySSMLText.Build(),
-			repromptSSMLText.Build(),
-			"You can ask a question like, What are the front page deals, or What are the popular deals.",
-			false,
-			nil)
-	}
-
-	return response
-
-}
+/*
 
 //Handler function for the both the FrontPage and Popular Deal Intents.
 //Parameters passed allow this function to accommodate both the initial request, as well as subsequent
@@ -130,11 +72,11 @@ func HandleDealIntent(request alexa.Request, dealType string, resumingPrior bool
 	} else {
 
 		if dealType == "Frontpage" {
-			feedResponse, _ = RequestFeed("frontpage")
+			_ = APIRequest("frontpage", "")
 			primarySSMLText.Say("Here are the current Front page deals:")
 			cardTextContent += "Here are the current Front page deals:\n"
 		} else {
-			feedResponse, _ = RequestFeed("popdeals")
+			_ = APIRequest("popdeals", "")
 			primarySSMLText.Say("Here are the current popular deals:")
 			cardTextContent += "Here are the current popular deals:\n"
 		}
@@ -203,65 +145,7 @@ func HandleDealIntent(request alexa.Request, dealType string, resumingPrior bool
 
 }
 
-//Handler function for the Help Intent
-func HandleHelpIntent(request alexa.Request) alexa.Response {
-	var primarySSMLText alexa.SSMLBuilder
-	var repromptSSMLText alexa.SSMLBuilder
-	var response alexa.Response
-
-	primarySSMLText.Say("OK, Here are some of the things you can ask:")
-	primarySSMLText.Pause("1000")
-	primarySSMLText.Say("What are the frontpage deals or,")
-	primarySSMLText.Pause("500")
-	primarySSMLText.Say("What are the popular deals.")
-
-	repromptSSMLText.Say("Please ask a question like, What are the frontpage deals, or " +
-		"What are the popular deals. Say Cancel if you'd like to quit.")
-	repromptSSMLText.Pause("500")
-
-	if alexa.SupportsAPL(&request) {
-
-		//This variable is setup to hold APL Display content
-		customDisplayData := alexa.CustomDataToDisplay{
-			ItemsListContent: make([]string, 3),
-		}
-		customDisplayData.ItemsListContent[0] = "Please ask a question like, What are the Frontpage deals, or What are the Popular deals. You can also say 'Cancel' to exit."
-
-		response = alexa.NewAPLAskResponse("Slick Dealer Help",
-			primarySSMLText.Build(),
-			repromptSSMLText.Build(),
-			"Please ask a question like, What are the Frontpage deals, or What are the Popular deals. You can also say 'Cancel' to exit.",
-			false,
-			nil,
-			"Help",
-			customDisplayData)
-	} else {
-		response = alexa.NewSimpleAskResponse("Slick Dealer Help",
-			primarySSMLText.Build(),
-			repromptSSMLText.Build(),
-			"Please ask a question like, What are the Frontpage deals, or What are the Popular deals. You can also say 'Cancel' to exit.",
-			false,
-			nil)
-	}
-
-	return response
-}
-
-//Handler function for the Stop and Cancel Intent
-func HandleStopIntent(request alexa.Request) alexa.Response {
-
-	var primarySSMLText alexa.SSMLBuilder
-	var response alexa.Response
-
-	primarySSMLText.Say("Thanks and have a great day!, Goodbye.")
-	response = alexa.NewSimpleTellResponse(os.Getenv("SkillTitle"),
-		primarySSMLText.Build(),
-		"Thanks and have a great day!, Goodbye.",
-		true,
-		nil)
-
-	return response
-}
+ */
 
 //handler() is the first call from the lambda handler, first checking if the caller is a defined 'Alexa Skill - has an ARN we approve', and
 //if so, will proceed

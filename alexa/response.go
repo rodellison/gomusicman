@@ -187,16 +187,19 @@ func NewAPLTellResponse(title, ssmlPrimaryText, cardText string, endSession bool
 	switch layoutToUse {
 
 	case "Home":
-		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = "Welcome to Slick Dealer"
-		myAPLDocData.APLDataSources.TemplateData.Properties.ItemsText[0] = customContent.ItemsListContent[0]
+		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = "Welcome to " + os.Getenv("SkillTitle")
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = customContent.ItemsListContent[0]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventImageUrl = "NA"
+		myAPLDocData.APLDataSources.TemplateData.Properties.HintString = "Where is Iron Maiden playing in July"
+
 	case "Help":
-		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = "Slick Dealer Help"
-		myAPLDocData.APLDataSources.TemplateData.Properties.ItemsText[0] = customContent.ItemsListContent[0]
-	case "ItemsList":
-		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = "Slick Dealer Items"
-		myAPLDocData.APLDataSources.TemplateData.Properties.ItemsText[0] = customContent.ItemsListContent[0]
-		myAPLDocData.APLDataSources.TemplateData.Properties.ItemsText[1] = customContent.ItemsListContent[1]
-		myAPLDocData.APLDataSources.TemplateData.Properties.ItemsText[2] = customContent.ItemsListContent[2]
+		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = os.Getenv("SkillTitle") + "Help"
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = customContent.ItemsListContent[0]
+	case "Events":
+		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = "Events"
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = customContent.ItemsListContent[0]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[1] = customContent.ItemsListContent[1]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[2] = customContent.ItemsListContent[2]
 	}
 
 	APLDirective := make([]Directives, 1)
@@ -247,16 +250,26 @@ func NewAPLAskResponse(title, ssmlPrimaryText, ssmlRepromptText, cardText string
 	switch layoutToUse {
 
 	case "Home":
-		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = "Welcome to Slick Dealer"
-		myAPLDocData.APLDataSources.TemplateData.Properties.ItemsText[0] = customContent.ItemsListContent[0]
+		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = "Welcome to " + os.Getenv("SkillTitle")
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = customContent.ItemsListContent[0]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventImageUrl = "NA"
+		myAPLDocData.APLDataSources.TemplateData.Properties.HintString = "Where is Iron Maiden playing in July"
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = customContent.ItemsListContent[0]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[1] = customContent.ItemsListContent[1]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[2] = customContent.ItemsListContent[2]
 	case "Help":
-		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = "Slick Dealer Help"
-		myAPLDocData.APLDataSources.TemplateData.Properties.ItemsText[0] = customContent.ItemsListContent[0]
-	case "ItemsList":
-		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = "Slick Dealer Items"
-		myAPLDocData.APLDataSources.TemplateData.Properties.ItemsText[0] = customContent.ItemsListContent[0]
-		myAPLDocData.APLDataSources.TemplateData.Properties.ItemsText[1] = customContent.ItemsListContent[1]
-		myAPLDocData.APLDataSources.TemplateData.Properties.ItemsText[2] = customContent.ItemsListContent[2]
+		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = os.Getenv("SkillTitle") + "Help"
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = customContent.ItemsListContent[0]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[1] = customContent.ItemsListContent[1]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[2] = customContent.ItemsListContent[2]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventImageUrl = "NA"
+		myAPLDocData.APLDataSources.TemplateData.Properties.HintString = "Who is coming to the Mohawk in May"
+
+	case "Events":
+		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = "Events"
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = customContent.ItemsListContent[0]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[1] = customContent.ItemsListContent[1]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[2] = customContent.ItemsListContent[2]
 	}
 
 	APLDirective := make([]Directives, 1)

@@ -5,7 +5,7 @@
 # For full config options, check the docs:
 # https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml/
 
-service: alexa-slick-dealer
+service: gomusicman
 # app and org for use with dashboard.serverless.com
 #app: your-app-name
 #org: your-org-name
@@ -14,6 +14,9 @@ service: alexa-slick-dealer
 # Check out our docs for more details
 # frameworkVersion: "=X.X.X"
 frameworkVersion: '>=1.28.0 <2.0.0'
+
+custom:
+  ApplicationName: "TheMusicMan"
 
 provider:
   name: aws
@@ -25,28 +28,18 @@ provider:
   # The default is 6 seconds. Note: API Gateway current maximum is 30 seconds
   #timeout: 10
   logRetentionInDays: 30 # Set the default RetentionInDays for a CloudWatch LogGroup
-  # you can ADD statements to the Lambda function's IAM Role (iamRoleStatements) here
-#  iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
-#        - "events:PutEvents"
-#      Resource: "arn:aws:events:us-east-1:619676567607:event-bus/conchrepublic"
-#    - Effect: "Allow"
-#      Action:
-#        - dynamodb:Query
-#        - dynamodb:Scan
-#        - dynamodb:GetItem
-#        - dynamodb:PutItem
-#        - dynamodb:UpdateItem
-#        - dynamodb:DeleteItem
-#      Resource: [
-#        "arn:aws:dynamodb:us-east-1:619676567607:table/FloridaKeysEvents",
-#       "arn:aws:dynamodb:us-east-1:619676567607:table/FloridaKeysEventsTest"
-#     ]
-#   - Effect: "Allow"
-#    Action:
-#        - "sns:Publish"
-#      Resource: "arn:aws:sns:*:619676567607:FloridaKeysTableUpdate"
+  #extra role permissions required for skill to operate
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+      Resource: ${env:${self:custom.ApplicationName}DynamoDBARN}
+    - Effect: "Allow"
+      Action:
+        - sns:Publish
+      Resource: ${env:${self:custom.ApplicationName}SNSTopic}
 
 #BY DEFAULT, these logging group/events role statements come built-in
 #    - Effect: "Allow"
@@ -71,13 +64,19 @@ functions:
     environment:
       #ENV values should be used to provide defaults as well as secure the Alexa skill backend code, to ensure it can only be invoked
       #by our Alexa skill defined in the Developer console
-      AppARN: ${env:AppARN}
-      AplTemplate: ${env:AplTemplate}
-      SkillTitle: ${env:SkillTitle}
-      SmallImg: ${env:SmallImg}
-      LargeImg: ${env:LargeImg}
+      #${env:${self:custom.ApplicationName}AppARN} concatenates to:  TheMusicManAppArn and similar for those below.
+      #Make sure these environmental variables are in place before deploying..
+      AppARN: ${env:${self:custom.ApplicationName}AppARN}
+      AplTemplate: ${env:${self:custom.ApplicationName}AplTemplate}
+      SkillTitle: ${env:${self:custom.ApplicationName}SkillTitle}
+      SmallImg: ${env:${self:custom.ApplicationName}SmallImg}
+      LargeImg: ${env:${self:custom.ApplicationName}LargeImg}
+      #The above items are fairly common to all skills, these below are custom for the skill
+      APIKey: ${env:${self:custom.ApplicationName}APIKey}
+      SNS_TOPIC: ${env:${self:custom.ApplicationName}SNSTopic}
+      DYNAMO_DB_TABLENAME: ${env:${self:custom.ApplicationName}DynamoDBARN}
     events:
-      - alexaSkill:
-          appId: ${env:AppARN}
+      - alexaSkill: # This sets up and creates the association of the Alexa skill to this Lambda function
+          appId: ${env:${self:custom.ApplicationName}AppARN}
           enabled: true
 
