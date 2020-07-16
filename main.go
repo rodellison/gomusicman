@@ -1,15 +1,18 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/rodellison/gomusicman/alexa"
 	"github.com/rodellison/gomusicman/handlers"
+	"github.com/rodellison/gomusicman/models"
 	"os"
 )
 
 var (
 	//These var definitions to help with Mock testing
-	StopCancelHandler, HelpHandler, LaunchHandler func (request alexa.Request) alexa.Response
+	StopCancelHandler, HelpHandler, LaunchHandler func(alexa.Request) alexa.Response
+	ArtistHandler, VenueHandler                   func(alexa.Request, bool, models.SessionData) alexa.Response
 )
 
 func init() {
@@ -17,26 +20,44 @@ func init() {
 	StopCancelHandler = handlers.HandleStopIntent
 	HelpHandler = handlers.HandleHelpIntent
 	LaunchHandler = handlers.HandleLaunchIntent
+	ArtistHandler = handlers.HandleArtistIntent
+	//	VenueHandler = handlers.HandleVenueIntent
 }
-
 
 //Centralized function to steer incoming alexa requests to the appropriate handler function
 func IntentDispatcher(request alexa.Request) alexa.Response {
+
 	var response alexa.Response
+	var sessionData models.SessionData
 
 	if request.Body.Type == "LaunchRequest" {
 		return LaunchHandler(request)
 	}
 
 	switch request.Body.Intent.Name {
-	//case "FrontpageDealIntent":
-	//	response = HandleDealIntent(request, "Frontpage", false)
-	//case "PopularDealIntent":
-	//	response = HandleDealIntent(request, "Popular", false)
-	//case alexa.YesIntent:
-	//	response = HandleDealIntent(request, "", true)
-	//case alexa.NoIntent:
-	//	response = HandleHelpIntent(request)
+	case "ArtistIntent":
+		response = ArtistHandler(request, false, sessionData)
+	case "VenueIntent":
+		response = VenueHandler(request, false, sessionData)
+	case alexa.YesIntent:
+
+		incomingSessionAttrs := request.Session.Attributes
+		incomingData, _ := json.Marshal(incomingSessionAttrs["dataToSave"])
+		json.Unmarshal(incomingData, &sessionData)
+		if len(sessionData.Eventdata) == 0 {
+			response = HelpHandler(request)
+		} else {
+			//because we've unmashalled the session data already, rather than do it again inside the respective handlers,
+			//just pass it along as a parm.
+			if sessionData.Intent == "ArtistIntent" {
+				response = ArtistHandler(request, true, sessionData)
+			} else {
+				response = VenueHandler(request, true, sessionData)
+			}
+		}
+
+	case alexa.NoIntent:
+		response = HelpHandler(request)
 	case alexa.StopIntent:
 		response = StopCancelHandler(request)
 	case alexa.CancelIntent:
@@ -49,117 +70,21 @@ func IntentDispatcher(request alexa.Request) alexa.Response {
 	return response
 }
 
-
-/*
-
-//Handler function for the both the FrontPage and Popular Deal Intents.
-//Parameters passed allow this function to accommodate both the initial request, as well as subsequent
-//requests as a result of the user saying 'yes' for more data
-func HandleDealIntent(request alexa.Request, dealType string, resumingPrior bool) alexa.Response {
-
-	var feedResponse FeedResponse
-	var primarySSMLText alexa.SSMLBuilder
-	var repromptSSMLText alexa.SSMLBuilder
-	var sessAttrData map[string]interface{}
-	var cardTextContent string
-
-	if resumingPrior {
-
-		incomingSessionAttrs := request.Session.Attributes
-		incomingData, _ := json.Marshal(incomingSessionAttrs["dataToSave"])
-		json.Unmarshal(incomingData, &feedResponse)
-
-	} else {
-
-		if dealType == "Frontpage" {
-			_ = APIRequest("frontpage", "")
-			primarySSMLText.Say("Here are the current Front page deals:")
-			cardTextContent += "Here are the current Front page deals:\n"
-		} else {
-			_ = APIRequest("popdeals", "")
-			primarySSMLText.Say("Here are the current popular deals:")
-			cardTextContent += "Here are the current popular deals:\n"
-		}
-		primarySSMLText.Pause("1000")
-	}
-
-	//This variable is setup to hold APL custom Display property content
-	customDisplayData := alexa.CustomDataToDisplay{
-		ItemsListContent: make([]string, 3),
-	}
-
-	if len(feedResponse.Channel.Item) > 3 {
-		for j := 0; j < 3; j++ {
-			thisItem := feedResponse.Channel.Item[j]
-			primarySSMLText.Say(thisItem.Title)
-			primarySSMLText.Pause("1000")
-
-			//This variable will store and be used to pass the text/content that needs to be displayed on the APL template
-			customDisplayData.ItemsListContent[j] = thisItem.Title
-			cardTextContent += thisItem.Title + "\n"
-		}
-
-		repromptString := "Would you like to hear more deals"
-		primarySSMLText.Say(repromptString)
-		primarySSMLText.Pause("1000")
-
-		repromptSSMLText.Say(repromptString)
-		repromptSSMLText.Pause("1000")
-
-		//Save session attributes data for reentry, should the user answer yes to 'more' details..
-		feedResponse.Channel.Item = feedResponse.Channel.Item[3:]
-
-		sessAttrData = make(map[string]interface{})
-		sessAttrData["dataToSave"] = feedResponse
-
-	} else {
-		for idx, item := range feedResponse.Channel.Item {
-			primarySSMLText.Say(item.Title)
-			primarySSMLText.Pause("1000")
-			customDisplayData.ItemsListContent[idx] = item.Title
-			cardTextContent += item.Title + "\n"
-		}
-		sessAttrData = nil
-		primarySSMLText.Say("There are no additional deals. Please ask another question like, What are the popular deals or What are the frontpage deals. Say Cancel to exit. ")
-		primarySSMLText.Pause("1000")
-	}
-
-	if alexa.SupportsAPL(&request) {
-
-		return alexa.NewAPLAskResponse(dealType+" Deals",
-			primarySSMLText.Build(),
-			repromptSSMLText.Build(),
-			cardTextContent,
-			false,
-			sessAttrData,
-			"ItemsList",
-			customDisplayData)
-	} else {
-		return alexa.NewSimpleAskResponse(dealType+" Deals",
-			primarySSMLText.Build(),
-			repromptSSMLText.Build(),
-			cardTextContent,
-			false,
-			sessAttrData)
-	}
-
-}
-
- */
-
-//handler() is the first call from the lambda handler, first checking if the caller is a defined 'Alexa Skill - has an ARN we approve', and
-//if so, will proceed
+//handler() is the first call from the lambda handler, first checking if the caller is coming from an expected 'Alexa Skill ARN.
+//if so, proceed, if not - send not auth response
 func Handler(request alexa.Request) (alexa.Response, error) {
 
 	//Ensure this lambda function/code is invoked through the associated Alexa Skill, and not called directly
 	if request.Session.Application.ApplicationID != os.Getenv("AppARN") {
 		var primarybuilder alexa.SSMLBuilder
 		primarybuilder.Say("Sorry, not authorized. Please enable and use this skill through an approved Alexa device.")
+
+		sessAttrData := make(map[string]interface{})
 		return alexa.NewSimpleTellResponse("Not authorized",
 			primarybuilder.Build(),
 			"Not authorized, Please enable and use this skill through an approved Alexa device.",
 			true,
-			nil), nil
+			&sessAttrData), nil
 	} else {
 		return IntentDispatcher(request), nil
 	}

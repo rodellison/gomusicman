@@ -34,12 +34,12 @@
             {
                 "description": "Standard font sizes",
                 "dimensions": {
-                    "textSizeBody": 44,
+                    "textSizeBody": 40,
                     "textSizePrimary": 24,
                     "textSizePrimary2": 30,
                     "textSizePrimary3": 36,
-                    "textSizeSecondary": 23,
-                    "textSizeSecondaryHint": 25
+                    "textSizeSecondary": 40,
+                    "textSizeSecondaryHint": 23
                 }
             },
             {
@@ -394,19 +394,19 @@
                                                                 "type": "Text",
                                                                 "text": "Ask a question similar to one of these:",
                                                                 "paddingTop": 40,
-                                                                "style": "textStylePrimary"
+                                                                "style": "textStylePrimary2"
                                                             },
                                                             {
                                                                 "type": "Text",
                                                                 "text": "Who's coming to Staples Center",
                                                                 "paddingTop": 20,
-                                                                "style": "textStylePrimary"
+                                                                "style": "textStylePrimary2"
                                                             },
                                                             {
                                                                 "type": "Text",
                                                                 "text": "Where is Iron Maiden playing in July",
                                                                 "paddingTop": 20,
-                                                                "style": "textStylePrimary"
+                                                                "style": "textStylePrimary2"
                                                             }
                                                         ]
                                                     }
@@ -585,19 +585,19 @@
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[0]}",
                                                 "paddingTop": 20,
-                                                "style": "textStyleSecondary"
+                                                "style": "textStylePrimary"
                                             },
                                             {
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[1]}",
                                                 "paddingTop": 20,
-                                                "style": "textStyleSecondary"
+                                                "style": "textStylePrimary"
                                             },
                                             {
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[2]}",
                                                 "paddingTop": 20,
-                                                "style": "textStyleSecondary"
+                                                "style": "textStylePrimary"
                                             }
                                         ]
                                     }
@@ -683,7 +683,7 @@
                                             {
                                                 "type": "Text",
                                                 "text": "<b>${payload.musicManTemplateData.properties.HeadingText}</b>",
-                                                "style": "textStyleBody"
+                                                "style": "textStylePrimary2"
                                             },
                                             {
                                                 "type": "Text",
@@ -793,19 +793,19 @@
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[0]}",
                                                 "paddingTop": 20,
-                                                "style": "textStylePrimary3"
+                                                "style": "textStyleSecondary"
                                             },
                                             {
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[1]}",
                                                 "paddingTop": 20,
-                                                "style": "textStylePrimary3"
+                                                "style": "textStyleSecondary"
                                             },
                                             {
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[2]}",
                                                 "paddingTop": 20,
-                                                "style": "textStylePrimary3"
+                                                "style": "textStyleSecondary"
                                             }
                                         ]
                                     }
@@ -897,19 +897,19 @@
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[0]}",
                                                 "paddingTop": 15,
-                                                "style": "textStyleSecondary2"
+                                                "style": "textStylePrimary2"
                                             },
                                             {
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[1]}",
                                                 "paddingTop": 15,
-                                                "style": "textStyleSecondary2"
+                                                "style": "textStylePrimary2"
                                             },
                                             {
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[2]}",
                                                 "paddingTop": 15,
-                                                "style": "textStyleSecondary2"
+                                                "style": "textStylePrimary2"
                                             }
                                         ]
                                     }
@@ -1084,19 +1084,19 @@
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[0]}",
                                                 "paddingTop": 20,
-                                                "style": "textStyleSecondary"
+                                                "style": "textStylePrimary"
                                             },
                                             {
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[1]}",
                                                 "paddingTop": 20,
-                                                "style": "textStyleSecondary"
+                                                "style": "textStylePrimary"
                                             },
                                             {
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[2]}",
                                                 "paddingTop": 20,
-                                                "style": "textStyleSecondary"
+                                                "style": "textStylePrimary"
                                             }
                                         ]
                                     }
@@ -1272,19 +1272,19 @@
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[0]}",
                                                 "paddingTop": 20,
-                                                "style": "textStylePrimary3"
+                                                "style": "textStyleSecondary"
                                             },
                                             {
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[1]}",
                                                 "paddingTop": 20,
-                                                "style": "textStylePrimary3"
+                                                "style": "textStyleSecondary"
                                             },
                                             {
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[2]}",
                                                 "paddingTop": 20,
-                                                "style": "textStylePrimary3"
+                                                "style": "textStyleSecondary"
                                             }
                                         ]
                                     }
@@ -1366,19 +1366,19 @@
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[0]}",
                                                 "paddingTop": 15,
-                                                "style": "textStyleSecondary2"
+                                                "style": "textStylePrimary2"
                                             },
                                             {
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[1]}",
                                                 "paddingTop": 15,
-                                                "style": "textStyleSecondary2"
+                                                "style": "textStylePrimary2"
                                             },
                                             {
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[2]}",
                                                 "paddingTop": 15,
-                                                "style": "textStyleSecondary2"
+                                                "style": "textStylePrimary2"
                                             }
                                         ]
                                     }
@@ -1435,7 +1435,7 @@
             "objectId": "MusicManSample",
             "properties": {
                 "Title": "The Music Man",
-                "LayoutToUse": "Home",
+                "LayoutToUse": "Help",
                 "HeadingText": "Here is where Iron Maiden is playing in July",
                 "EventImageUrl": "NA",
                 "HintString": "Where is Iron Maiden playing in July",

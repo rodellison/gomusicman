@@ -36,7 +36,6 @@ func TestAPIRequestVenueID(t *testing.T) {
 
 }
 
-
 func TestAPIRequestVenueCalendar(t *testing.T) {
 
 	requestURL := "http://api.songkick.com/api/3.0/venues/598/calendar.json"

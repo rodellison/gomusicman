@@ -24,6 +24,7 @@ func HandleLaunchIntent(request alexa.Request) alexa.Response {
 	repromptSSMLText.Say("Who is coming to Staples Center, or Where is Iron Maiden playing in July?")
 
 	cardText := "Try asking a question similar to one of these: \n Who is coming to Staples Center, or Where is Iron Maiden playing in July?"
+	sessAttrData := make(map[string]interface{})
 
 	if alexa.SupportsAPL(&request) {
 		customDisplayData := alexa.CustomDataToDisplay{
@@ -34,21 +35,21 @@ func HandleLaunchIntent(request alexa.Request) alexa.Response {
 		customDisplayData.ItemsListContent[1] = "Who is coming to Staples Center?"
 		customDisplayData.ItemsListContent[2] = "Where is Iron Maiden playing"
 
-		response = alexa.NewAPLAskResponse("Welcome to " + os.Getenv("SkillTitle"),
+		response = alexa.NewAPLAskResponse("Welcome to "+os.Getenv("SkillTitle"),
 			primarySSMLText.Build(),
 			repromptSSMLText.Build(),
 			cardText,
 			false,
-			nil,
+			&sessAttrData,
 			"Home",
-			customDisplayData)
+			&customDisplayData)
 	} else {
-		response = alexa.NewSimpleAskResponse("Welcome to " + os.Getenv("SkillTitle"),
+		response = alexa.NewSimpleAskResponse("Welcome to "+os.Getenv("SkillTitle"),
 			primarySSMLText.Build(),
 			repromptSSMLText.Build(),
 			cardText,
 			false,
-			nil)
+			&sessAttrData)
 	}
 
 	return response

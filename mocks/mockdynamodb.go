@@ -10,11 +10,11 @@ type MockDynamoDBSvcClient struct {
 }
 
 var (
-	MockDynamoScan func(input *dynamodb.ScanInput) (*dynamodb.ScanOutput, error)
+	MockDynamoGetItem func(input *dynamodb.GetItemInput) (*dynamodb.GetItemOutput, error)
 )
 
 //This is the mocked version of the real function
 //It returns the variable above, which is a function that can be overloaded in our test routines
-func (m *MockDynamoDBSvcClient) Scan(input *dynamodb.ScanInput) (*dynamodb.ScanOutput, error) {
-	return MockDynamoScan(input)
+func (m *MockDynamoDBSvcClient) GetItem(input *dynamodb.GetItemInput) (*dynamodb.GetItemOutput, error) {
+	return MockDynamoGetItem(input)
 }

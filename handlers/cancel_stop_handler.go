@@ -13,12 +13,14 @@ func HandleStopIntent(request alexa.Request) alexa.Response {
 
 	primarySSMLText.Say("Thanks for using the Music Man. Goodbye.")
 	primarySSMLText.Say("<audio src='soundbank://soundlibrary/musical/amzn_sfx_musical_drone_intro_02'/>")
+
+	sessAttrData := make(map[string]interface{})
+
 	response = alexa.NewSimpleTellResponse(os.Getenv("SkillTitle"),
 		primarySSMLText.Build(),
 		"Thanks for using the Music Man!",
 		true,
-		nil)
+		&sessAttrData)
 
 	return response
 }
-

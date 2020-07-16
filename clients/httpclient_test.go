@@ -28,7 +28,7 @@ func TestConstructURLRequestArtistCalendar(t *testing.T) {
 
 	urlExpected := "http://api.songkick.com/api/3.0/artists/438390/calendar.json?apikey="
 	urlRequest, _ := ConstructURLRequest("ArtistCalendar", "438390")
-	assert.Contains(t, urlRequest, urlExpected, )
+	assert.Contains(t, urlRequest, urlExpected)
 
 }
 
@@ -46,7 +46,7 @@ func TestConstructURLRequestVenueCalendar(t *testing.T) {
 
 	urlExpected := "http://api.songkick.com/api/3.0/venues/123456/calendar.json?apikey="
 	urlRequest, _ := ConstructURLRequest("VenueCalendar", "123456")
-	assert.Contains(t, urlRequest, urlExpected, )
+	assert.Contains(t, urlRequest, urlExpected)
 }
 
 func TestGetURLReturnsGood(t *testing.T) {

@@ -21,12 +21,13 @@ type HTTPClient interface {
 }
 
 var (
+	//IF we're running a test, we'll swap this variable's value to use a mock instead, but when not
+	//testing, the value will be preset to ensure that it uses the 'real' httpClient interface
 	TheHTTPClient HTTPClient
 )
 
 func init() {
-	//IF we're running a test, we'll swap this variable's value to use a mock instead, but when not
-	//testing, the value will be preset to ensure that it uses the 'real' httpClient interface
+
 	TheHTTPClient = &http.Client{}
 }
 
@@ -44,22 +45,6 @@ func GetURL(url string) (*http.Response, error) {
 	//Client := &http.Client{}  using the variable/interface above to facilitate easier mock testing later
 	return TheHTTPClient.Do(request)
 }
-
-//// Post sends a post request to the URL with the body
-//func PostURL(url string, body interface{}, headers http.Header) (*http.Response, error) {
-//	jsonBytes, err := json.Marshal(body)
-//	if err != nil {
-//		return nil, err
-//	}
-//	request, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(jsonBytes))
-//	if err != nil {
-//		return nil, err
-//	}
-//	request.Header = headers
-////	client := &http.Client{}
-//	return TheHTTPClient.Do(request)
-//}
-
 
 //RequestFeed handles fetching external HTML site data and Unmarhalling to a struct that can be used later
 //within the respective handler functions

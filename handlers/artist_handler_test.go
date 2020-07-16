@@ -12,7 +12,18 @@ import (
 )
 
 func init() {
+
 	clients.TheHTTPClient = &mocks.MockHTTPClient{}
+}
+
+func TestConvertStateAbbreviation(t *testing.T) {
+
+	location := "Virginia Beach, VA, US"
+	expectedResult := "Virginia Beach, Virginia"
+	//	var artistIDResponse models.ArtistIDResponse
+	response := convertStateAbbreviation(location)
+	assert.Equal(t, expectedResult, response)
+
 }
 
 func TestAPIRequestArtistID(t *testing.T) {
@@ -30,12 +41,11 @@ func TestAPIRequestArtistID(t *testing.T) {
 			Body:       r,
 		}, nil
 	}
-	var artistIDResponse models.ArtistIDResponse
-	artistIDResponse, _ = APIRequestArtistID(requestURL)
+//	var artistIDResponse models.ArtistIDResponse
+	artistIDResponse, _ := APIRequestArtistID(requestURL)
 	assert.Equal(t, artistIDResponse.ResultsPage.Results.Artist[0].DisplayName, "Iron Maiden")
 
 }
-
 
 func TestAPIRequestArtistCalendar(t *testing.T) {
 
@@ -52,8 +62,52 @@ func TestAPIRequestArtistCalendar(t *testing.T) {
 			Body:       r,
 		}, nil
 	}
-	var artistCalendarResponse models.CalendarResponse
-	artistCalendarResponse, _ = APIRequestArtistEventCalendar(requestURL)
+//	var artistCalendarResponse models.CalendarResponse
+	artistCalendarResponse, _ := APIRequestArtistEventCalendar(requestURL)
 	assert.Equal(t, artistCalendarResponse.ResultsPage.Results.Event[0].Location.City, "Zürich, Switzerland")
 
 }
+
+func TestFetchArtistData(t *testing.T) {
+
+	artist := make([]models.Artist, 1)
+	artist[0].ID = 12345
+	artist[0].DisplayName = "Iron Maiden"
+	artistResults := models.ArtistIDResults{Artist: artist}
+	artistResultsPage := models.ArtistIDResultsPage{
+		Status:       "ok",
+		Results:      artistResults,
+		TotalEntries: 1,
+	}
+
+	var artistIDResponse models.ArtistIDResponse = models.ArtistIDResponse{ResultsPage: artistResultsPage}
+	APIRequestArtistID = func(string) (*models.ArtistIDResponse, error) {
+		return &artistIDResponse, nil
+	}
+
+	calendarEvents := make([]models.CalendarEvents, 1)
+	calendarEvents[0].Status = "ok"
+	calendarEvents[0].DisplayName = "Iron Maiden with special guests at Dayton Hara Arena (2020-07-01)"
+	calendarEvents[0].Start.Date = "2020-07-01"
+	calendarEvents[0].Venue.DisplayName = "Dayton Hara Arena"
+	calendarEvents[0].Location.City = "Dayton, OH"
+	calendarResults := models.CalendarResults{
+		Event: calendarEvents,
+	}
+	calendarResultsPage := models.CalendarResultsPage{
+		Status:       "success",
+		Results:      calendarResults,
+		TotalEntries: 1,
+	}
+
+	var artistCalendarResponse models.CalendarResponse = models.CalendarResponse{ResultsPage: calendarResultsPage}
+	APIRequestArtistEventCalendar = func(string) (*models.CalendarResponse, error) {
+		return &artistCalendarResponse, nil
+	}
+
+	artistCalendarEvents, _ := fetchArtistData("Iron Maiden", "July")
+	assert.Contains(t, artistCalendarEvents[0], "July 1, 2020")
+}
+
+
+//TODO Add a test for HandleArtistIntent

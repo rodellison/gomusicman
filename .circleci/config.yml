@@ -51,7 +51,7 @@ jobs:
           name: Format AWS Credentials file  #AWS Creds to be placed in Environmental Variables
           command: echo -e "[default]\naws_access_key_id=$AWS_ACCESS_KEY_ID_DEFAULT\naws_secret_access_key=$AWS_SECRET_ACCESS_KEY_DEFAULT\n" > ~/.aws/credentials
       - run:
-          name: Install Serverless CLI and dependencies
+          name: Install Serverless and AWS dependencies
           command: |
             sudo npm i -g serverless
             sudo apt-get install awscli  #Note! - AWS creds need to be setup at CircleCI to deploy
@@ -67,19 +67,23 @@ workflows:
   build_and_test:
     jobs:
       - build_test
-#      - hold: # <<< the hold job is a special job that enforces a manual approval in the CircleCI web application.
-#          type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
-#          requires: # We only run the "hold" job when build_test has succeeded
-#            - build_test
+      - hold: # <<< the hold job is a special job that enforces a manual approval in the CircleCI web application.
+          type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
+          requires: # We only run the "hold" job when build_test has succeeded
+            - build_test
+          filters:  #ONLY hold when the workflow is running based on a change to the MASTER branch.. i.e. a pull request merge has occurred, and NOT just a push to any remote development branch..
+            branches:
+              only:
+                - master
       # On approval of the `hold` job, any successive job that requires the `hold` job will run.
       # In this case, a user is manually triggering the deploy job.
-#      - deploy:
-#          requires:
-#            - hold
-#          filters:  #ONLY deploy when the workflow is running based on a change to the MASTER branch.. i.e. a pull request merge has occurred, and NOT just a push to any remote development branch..
-#            branches:
-#              only:
-#                - master
+      - deploy:
+          requires:
+            - hold
+          filters:  #ONLY deploy when the workflow is running based on a change to the MASTER branch.. i.e. a pull request merge has occurred, and NOT just a push to any remote development branch..
+            branches:
+              only:
+                - master
 
 
 

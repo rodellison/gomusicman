@@ -81,18 +81,14 @@ type Payload struct {
 //Response oriented functions ------------------------------------
 func ParseString(text string) string {
 	text = strings.ToLower(text)
-	text = strings.Replace(text, "&", "and", -1)
-	text = strings.Replace(text, "+", "plus", -1)
-	text = strings.Replace(text, "@", "at", -1)
-	text = strings.Replace(text, "w/", "with", -1)
-	text = strings.Replace(text, "in.", "inches", -1)
-	text = strings.Replace(text, "s/h", "shipping and handling", -1)
-	text = strings.Replace(text, " ac ", " after coupon ", -1)
-	text = strings.Replace(text, "fs", "free shipping", -1)
-	text = strings.Replace(text, "f/s", "free shipping", -1)
-	text = strings.Replace(text, "-", "", -1)
-	text = strings.Replace(text, "™", "", -1)
-	text = strings.Replace(text, "  ", " ", -1)
+	text = strings.Replace(text, "&", " and ", -1)
+	text = strings.Replace(text, "+", " plus ", -1)
+
+	text = strings.Replace(text, "AT&T", "a. t. and t", -1)
+	text = strings.Replace(text, "BB&T", "b. b. and t", -1)
+	text = strings.Replace(text, "US", "u. s.", -1)
+
+
 	return text
 }
 
@@ -110,12 +106,12 @@ func getImages() Image {
 
 //NewSimpleTellResponse constructs a non reprompt oriented Response structure that can be returned to the Alexa user who is NOT using a
 //display capable device. (i.e. Echo, Dot, Tap)
-func NewSimpleTellResponse(title, ssmlPrimaryText, cardText string, endSession bool, sessionDataToSave map[string]interface{}) Response {
+func NewSimpleTellResponse(title, ssmlPrimaryText, cardText string, endSession bool, sessionDataToSave *map[string]interface{}) Response {
 
 	//This version is for non Display oriented Alexa devices (i.e.  Echo, Dot).
 	r := Response{
 		Version:           "1.0",
-		SessionAttributes: sessionDataToSave,
+		SessionAttributes: *sessionDataToSave,
 		Body: ResBody{
 			OutputSpeech: &Payload{
 				Type: "SSML",
@@ -137,12 +133,12 @@ func NewSimpleTellResponse(title, ssmlPrimaryText, cardText string, endSession b
 
 //NewSimpleAskResponse constructs a Reprompt oriented Response structure that can be returned to the Alexa user who is NOT using a
 //display capable device. (i.e. Echo, Dot, Tap)
-func NewSimpleAskResponse(title, ssmlPrimaryText, ssmlRepromptText, cardText string, endSession bool, sessionDataToSave map[string]interface{}) Response {
+func NewSimpleAskResponse(title, ssmlPrimaryText, ssmlRepromptText, cardText string, endSession bool, sessionDataToSave *map[string]interface{}) Response {
 
 	//This version is for non Display oriented Alexa devices (i.e.  Echo, Dot).
 	r := Response{
 		Version:           "1.0",
-		SessionAttributes: sessionDataToSave,
+		SessionAttributes: *sessionDataToSave,
 		Body: ResBody{
 			OutputSpeech: &Payload{
 				Type: "SSML",
@@ -170,9 +166,8 @@ func NewSimpleAskResponse(title, ssmlPrimaryText, ssmlRepromptText, cardText str
 
 //NewAPLTellResponse constructs a non reprompt oriented Response structure that can be returned to the Alexa user who IS using a
 //display capable device. (i.e. Show, Firestick)
-func NewAPLTellResponse(title, ssmlPrimaryText, cardText string, endSession bool, sessionDataToSave map[string]interface{}, layoutToUse string, contentToUse interface{}) Response {
+func NewAPLTellResponse(title, ssmlPrimaryText, cardText string, endSession bool, sessionDataToSave *map[string]interface{}, layoutToUse string, contentToUse *CustomDataToDisplay) Response {
 
-	customContent := contentToUse.(CustomDataToDisplay)
 	//This version is for APL Display oriented Alexa devices (i.e.  Show, Firestick).
 	myAPLDocData, err := FetchAPL()
 	if err != nil {
@@ -188,18 +183,23 @@ func NewAPLTellResponse(title, ssmlPrimaryText, cardText string, endSession bool
 
 	case "Home":
 		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = "Welcome to " + os.Getenv("SkillTitle")
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = customContent.ItemsListContent[0]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = contentToUse.ItemsListContent[0]
 		myAPLDocData.APLDataSources.TemplateData.Properties.EventImageUrl = "NA"
 		myAPLDocData.APLDataSources.TemplateData.Properties.HintString = "Where is Iron Maiden playing in July"
 
 	case "Help":
-		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = os.Getenv("SkillTitle") + "Help"
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = customContent.ItemsListContent[0]
+		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = title
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = contentToUse.ItemsListContent[0]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[1] = contentToUse.ItemsListContent[1]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[2] = contentToUse.ItemsListContent[2]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventImageUrl = "NA"
+		myAPLDocData.APLDataSources.TemplateData.Properties.HintString = "Who is coming to the Mohawk in May"
+
 	case "Events":
-		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = "Events"
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = customContent.ItemsListContent[0]
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[1] = customContent.ItemsListContent[1]
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[2] = customContent.ItemsListContent[2]
+		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = title
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = contentToUse.ItemsListContent[0]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[1] = contentToUse.ItemsListContent[1]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[2] = contentToUse.ItemsListContent[2]
 	}
 
 	APLDirective := make([]Directives, 1)
@@ -210,7 +210,7 @@ func NewAPLTellResponse(title, ssmlPrimaryText, cardText string, endSession bool
 
 	r := Response{
 		Version:           "1.0",
-		SessionAttributes: sessionDataToSave,
+		SessionAttributes: *sessionDataToSave,
 		Body: ResBody{
 			OutputSpeech: &Payload{
 				Type: "SSML",
@@ -233,9 +233,8 @@ func NewAPLTellResponse(title, ssmlPrimaryText, cardText string, endSession bool
 
 //NewAPLAskResponse constructs a Reprompt oriented Response structure that can be returned to the Alexa user who IS using a
 //display capable device. (i.e. Show, Firestick)
-func NewAPLAskResponse(title, ssmlPrimaryText, ssmlRepromptText, cardText string, endSession bool, sessionDataToSave map[string]interface{}, layoutToUse string, contentToUse interface{}) Response {
+func NewAPLAskResponse(title, ssmlPrimaryText, ssmlRepromptText, cardText string, endSession bool, sessionDataToSave *map[string]interface{}, layoutToUse string, contentToUse *CustomDataToDisplay) Response {
 
-	customContent := contentToUse.(CustomDataToDisplay)
 	//This version is for APL Display oriented Alexa devices (i.e.  Show, Firestick).
 	myAPLDocData, err := FetchAPL()
 	if err != nil {
@@ -251,25 +250,26 @@ func NewAPLAskResponse(title, ssmlPrimaryText, ssmlRepromptText, cardText string
 
 	case "Home":
 		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = "Welcome to " + os.Getenv("SkillTitle")
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = customContent.ItemsListContent[0]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = contentToUse.ItemsListContent[0]
 		myAPLDocData.APLDataSources.TemplateData.Properties.EventImageUrl = "NA"
 		myAPLDocData.APLDataSources.TemplateData.Properties.HintString = "Where is Iron Maiden playing in July"
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = customContent.ItemsListContent[0]
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[1] = customContent.ItemsListContent[1]
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[2] = customContent.ItemsListContent[2]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = contentToUse.ItemsListContent[0]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[1] = contentToUse.ItemsListContent[1]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[2] = contentToUse.ItemsListContent[2]
 	case "Help":
-		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = os.Getenv("SkillTitle") + "Help"
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = customContent.ItemsListContent[0]
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[1] = customContent.ItemsListContent[1]
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[2] = customContent.ItemsListContent[2]
+		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = title
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = contentToUse.ItemsListContent[0]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[1] = contentToUse.ItemsListContent[1]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[2] = contentToUse.ItemsListContent[2]
 		myAPLDocData.APLDataSources.TemplateData.Properties.EventImageUrl = "NA"
 		myAPLDocData.APLDataSources.TemplateData.Properties.HintString = "Who is coming to the Mohawk in May"
 
 	case "Events":
-		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = "Events"
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = customContent.ItemsListContent[0]
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[1] = customContent.ItemsListContent[1]
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[2] = customContent.ItemsListContent[2]
+		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = title
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = contentToUse.ItemsListContent[0]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[1] = contentToUse.ItemsListContent[1]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[2] = contentToUse.ItemsListContent[2]
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventImageUrl = contentToUse.ArtistImgURL
 	}
 
 	APLDirective := make([]Directives, 1)
@@ -280,7 +280,7 @@ func NewAPLAskResponse(title, ssmlPrimaryText, ssmlRepromptText, cardText string
 
 	r := Response{
 		Version:           "1.0",
-		SessionAttributes: sessionDataToSave,
+		SessionAttributes: *sessionDataToSave,
 		Body: ResBody{
 			OutputSpeech: &Payload{
 				Type: "SSML",

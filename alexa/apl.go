@@ -44,7 +44,7 @@ type APLDocument struct {
 //are completely customized and unique for each skill.
 //We need the properties to be accessible so as to dynamically populate them when responding to user requests
 type APLDataSources struct {
-	TemplateData TemplateData `json:"musicManTemplateData,omitempty"`  //NOTE!, make sure to use the correct json: value if different than templateData!
+	TemplateData TemplateData `json:"musicManTemplateData,omitempty"` //NOTE!, make sure to use the correct json: value if different than templateData!
 }
 
 type TemplateData struct {
@@ -75,6 +75,7 @@ type APLDataProperties struct {
 //It should be customized as needed to support the data needs of the dynamically updated Datasource APL properties
 type CustomDataToDisplay struct {
 	ItemsListContent []string
+	ArtistImgURL string
 }
 
 //CreateAPLDocAndData is a function that loads json input that contains the APL template for the Skill. Once loaded, the content
