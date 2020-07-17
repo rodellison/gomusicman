@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-		DynamoDBSvcClient = &mocks.MockDynamoDBSvcClient{}
+	DynamoDBSvcClient = &mocks.MockDynamoDBSvcClient{}
 }
 
 //This test returns a known valid replacement for an item

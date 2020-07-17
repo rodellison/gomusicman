@@ -7,7 +7,6 @@ import (
 	"testing"
 )
 
-
 func TestHandleLaunchIntent(t *testing.T) {
 
 	theRequest := &alexa.Request{
@@ -27,7 +26,6 @@ func TestHandleLaunchIntent(t *testing.T) {
 	assert.NotEmpty(t, response, "The response should not be empty")
 	assert.NotEmpty(t, response.Body.OutputSpeech, "There should be output speech")
 }
-
 
 func TestHandleLaunchIntentWithAPL(t *testing.T) {
 

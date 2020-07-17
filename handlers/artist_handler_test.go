@@ -41,7 +41,7 @@ func TestAPIRequestArtistID(t *testing.T) {
 			Body:       r,
 		}, nil
 	}
-//	var artistIDResponse models.ArtistIDResponse
+	//	var artistIDResponse models.ArtistIDResponse
 	artistIDResponse, _ := APIRequestArtistID(requestURL)
 	assert.Equal(t, artistIDResponse.ResultsPage.Results.Artist[0].DisplayName, "Iron Maiden")
 
@@ -62,7 +62,7 @@ func TestAPIRequestArtistCalendar(t *testing.T) {
 			Body:       r,
 		}, nil
 	}
-//	var artistCalendarResponse models.CalendarResponse
+	//	var artistCalendarResponse models.CalendarResponse
 	artistCalendarResponse, _ := APIRequestArtistEventCalendar(requestURL)
 	assert.Equal(t, artistCalendarResponse.ResultsPage.Results.Event[0].Location.City, "Zürich, Switzerland")
 
@@ -108,6 +108,5 @@ func TestFetchArtistData(t *testing.T) {
 	artistCalendarEvents, _ := fetchArtistData("Iron Maiden", "July")
 	assert.Contains(t, artistCalendarEvents[0], "July 1, 2020")
 }
-
 
 //TODO Add a test for HandleArtistIntent

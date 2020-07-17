@@ -1,6 +1,7 @@
 package alexa
 
 import (
+	"math/rand"
 	"os"
 	"strings"
 )
@@ -87,7 +88,6 @@ func ParseString(text string) string {
 	text = strings.Replace(text, "AT&T", "a. t. and t", -1)
 	text = strings.Replace(text, "BB&T", "b. b. and t", -1)
 	text = strings.Replace(text, "US", "u. s.", -1)
-
 
 	return text
 }
@@ -178,6 +178,13 @@ func NewAPLTellResponse(title, ssmlPrimaryText, cardText string, endSession bool
 	//Now Adjust the Data source properties as needed
 	//This sets which APL layout will be used for displaying content
 	myAPLDocData.APLDataSources.TemplateData.Properties.LayoutToUse = layoutToUse
+	//Setup a random background from our Background image array options
+	backgroundImageInfo := 	strings.Split(myAPLDocData.APLDataSources.TemplateData.Properties.BackgroundImages[rand.Intn(len(myAPLDocData.APLDataSources.TemplateData.Properties.BackgroundImages))], "|")
+	backgroundImageURL := backgroundImageInfo[0]
+	backgroundImageAttribution := backgroundImageInfo[1]
+	myAPLDocData.APLDataSources.TemplateData.Properties.BackgroundImageUrl = backgroundImageURL
+	myAPLDocData.APLDataSources.TemplateData.Properties.PhotoAttribution = "Photo by: " + backgroundImageAttribution
+
 
 	switch layoutToUse {
 
@@ -187,19 +194,13 @@ func NewAPLTellResponse(title, ssmlPrimaryText, cardText string, endSession bool
 		myAPLDocData.APLDataSources.TemplateData.Properties.EventImageUrl = "NA"
 		myAPLDocData.APLDataSources.TemplateData.Properties.HintString = "Where is Iron Maiden playing in July"
 
-	case "Help":
+	case "Main":
 		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = title
 		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = contentToUse.ItemsListContent[0]
 		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[1] = contentToUse.ItemsListContent[1]
 		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[2] = contentToUse.ItemsListContent[2]
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventImageUrl = "NA"
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventImageUrl = contentToUse.ArtistVenueImgURL
 		myAPLDocData.APLDataSources.TemplateData.Properties.HintString = "Who is coming to the Mohawk in May"
-
-	case "Events":
-		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = title
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = contentToUse.ItemsListContent[0]
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[1] = contentToUse.ItemsListContent[1]
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[2] = contentToUse.ItemsListContent[2]
 	}
 
 	APLDirective := make([]Directives, 1)
@@ -245,6 +246,12 @@ func NewAPLAskResponse(title, ssmlPrimaryText, ssmlRepromptText, cardText string
 	//Now Adjust the Data source properties as needed
 	//This sets which APL layout will be used for displaying content
 	myAPLDocData.APLDataSources.TemplateData.Properties.LayoutToUse = layoutToUse
+	//Setup a random background from our Background image array options
+	backgroundImageInfo := 	strings.Split(myAPLDocData.APLDataSources.TemplateData.Properties.BackgroundImages[rand.Intn(len(myAPLDocData.APLDataSources.TemplateData.Properties.BackgroundImages))], "|")
+	backgroundImageURL := backgroundImageInfo[0]
+	backgroundImageAttribution := backgroundImageInfo[1]
+	myAPLDocData.APLDataSources.TemplateData.Properties.BackgroundImageUrl = backgroundImageURL
+	myAPLDocData.APLDataSources.TemplateData.Properties.PhotoAttribution = "Photo by: " + backgroundImageAttribution
 
 	switch layoutToUse {
 
@@ -256,20 +263,14 @@ func NewAPLAskResponse(title, ssmlPrimaryText, ssmlRepromptText, cardText string
 		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = contentToUse.ItemsListContent[0]
 		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[1] = contentToUse.ItemsListContent[1]
 		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[2] = contentToUse.ItemsListContent[2]
-	case "Help":
-		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = title
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = contentToUse.ItemsListContent[0]
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[1] = contentToUse.ItemsListContent[1]
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[2] = contentToUse.ItemsListContent[2]
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventImageUrl = "NA"
-		myAPLDocData.APLDataSources.TemplateData.Properties.HintString = "Who is coming to the Mohawk in May"
 
-	case "Events":
+	case "Main":
 		myAPLDocData.APLDataSources.TemplateData.Properties.HeadingText = title
 		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[0] = contentToUse.ItemsListContent[0]
 		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[1] = contentToUse.ItemsListContent[1]
 		myAPLDocData.APLDataSources.TemplateData.Properties.EventText[2] = contentToUse.ItemsListContent[2]
-		myAPLDocData.APLDataSources.TemplateData.Properties.EventImageUrl = contentToUse.ArtistImgURL
+		myAPLDocData.APLDataSources.TemplateData.Properties.EventImageUrl = contentToUse.ArtistVenueImgURL
+		myAPLDocData.APLDataSources.TemplateData.Properties.HintString = "Who is coming to the Mohawk in May"
 	}
 
 	APLDirective := make([]Directives, 1)

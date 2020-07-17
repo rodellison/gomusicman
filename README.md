@@ -40,8 +40,12 @@ On display devices, background images
  
 Attribution to the following talented photographers on **Unsplash** for the use of their imagery:
 
-- **Vishnu R Nair** https://unsplash.com/photos/m1WZS5ye404
-
-- **Yvette de Wit** https://unsplash.com/photos/NYrVisodQ2M
-
-- **Sebastian Ervi** https://unsplash.com/photos/xJt6Gs20Uqc
+- **Vishnu R Nair** 
+- **Yvette de Wit** 
+- **Artem Bryzgalov** 
+- **Frankie Cordoba** 
+- **Jaques Gollnick** 
+- **Keagan Henman** 
+- **Mark de Jong** 
+- **Parker Coffman** 
+- **Wesley Tingey** 

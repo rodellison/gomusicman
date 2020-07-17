@@ -21,7 +21,7 @@ func init() {
 	HelpHandler = handlers.HandleHelpIntent
 	LaunchHandler = handlers.HandleLaunchIntent
 	ArtistHandler = handlers.HandleArtistIntent
-	//	VenueHandler = handlers.HandleVenueIntent
+	VenueHandler = handlers.HandleVenueIntent
 }
 
 //Centralized function to steer incoming alexa requests to the appropriate handler function

@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"github.com/rodellison/gomusicman/alexa"
 	"github.com/rodellison/gomusicman/clients"
+	"github.com/rodellison/gomusicman/common"
 	"github.com/rodellison/gomusicman/models"
 	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
-	"time"
 )
 
 var (
@@ -27,21 +27,11 @@ func init() {
 }
 
 const (
-	layoutISO              = "2006-01-02"
-	layoutUS               = "January 2, 2006"
 	SongkickArtistImageURL = "https://images.sk-static.com/images/media/profile_images/artists/ARTISTID/huge_avatar"
 	ARTIST_NAME_SLOT       = "artist"
 	ARTIST_MONTH_SLOT      = "month"
 	ARTIST_INTENT          = "ArtistIntent"
 )
-
-func convertDate(dateValue string) string {
-
-	date := dateValue
-	t, _ := time.Parse(layoutISO, date)
-	return t.Format(layoutUS)
-
-}
 
 type ArtistData struct {
 	ID        string
@@ -73,23 +63,6 @@ func apiRequestArtistEventCalendar(urlToGet string) (*models.CalendarResponse, e
 		json.Unmarshal(data, &calendarReponse)
 		return &calendarReponse, nil
 	}
-}
-
-func cleanupKnownUserErrorForArtists(theValue string) string {
-	cleanedUpValue := theValue
-
-	cleanedUpValue = strings.Replace(strings.ToLower(cleanedUpValue), " today", "", 1)
-	cleanedUpValue = strings.Replace(strings.ToLower(cleanedUpValue), " tonight", "", 1)
-	cleanedUpValue = strings.Replace(strings.ToLower(cleanedUpValue), " tomorrow", "", 1)
-	cleanedUpValue = strings.Replace(strings.ToLower(cleanedUpValue), " this week", "", 1)
-	cleanedUpValue = strings.Replace(strings.ToLower(cleanedUpValue), " next week", "", 1)
-	cleanedUpValue = strings.Replace(strings.ToLower(cleanedUpValue), " this month", "", 1)
-	cleanedUpValue = strings.Replace(strings.ToLower(cleanedUpValue), " next month", "", 1)
-	cleanedUpValue = strings.Replace(strings.ToLower(cleanedUpValue), "the rock group ", "", 1)
-	cleanedUpValue = strings.Replace(strings.ToLower(cleanedUpValue), "the music group ", "", 1)
-
-	return cleanedUpValue
-
 }
 
 func convertStateAbbreviation(stateLocation string) string {
@@ -128,6 +101,7 @@ func fetchArtistData(artist, month string) ([]string, error) {
 		return nil, err
 	}
 
+	fmt.Println("URL being fetched: ", urlToFetch)
 	//Make an API call to Songkick to get the Artist's Event Calendar
 	artistCalendarResponse, err := APIRequestArtistEventCalendar(urlToFetch)
 	if err != nil {
@@ -140,34 +114,25 @@ func fetchArtistData(artist, month string) ([]string, error) {
 	for _, item := range artistCalendarResponse.ResultsPage.Results.Event {
 		//If the user passed a Month as part of their request.. then filter out just those events..
 		//The end result may be that no events are included.
-		dateString := " on " + convertDate(item.Start.Date)
+		dateString := " on " + common.ConvertDate(item.Start.Date)
 		thisLocation := item.Location.City
 		if strings.Contains(thisLocation, ", US") {
 			//Songkick uses the State abbreviation so convert it. The state is now the LAST two chars in this string..
 			thisLocation = convertStateAbbreviation(thisLocation)
 		}
 
-		if (thisMonth != "" && strings.Contains(dateString, " "+thisMonth+" ") || thisMonth == "") {
-			displayEventString := " at "+item.Venue.DisplayName+dateString+" in "+ thisLocation
+		if thisMonth != "" && strings.Contains(dateString, " "+thisMonth+" ") || thisMonth == "" {
+			displayEventString := " at " + item.Venue.DisplayName + dateString + " in " + thisLocation
 			if strings.Contains(item.DisplayName, "CANCELLED") {
 				displayEventString += ", is CANCELLED."
 			}
 
-			itemsToSave = append(itemsToSave,displayEventString)
+			itemsToSave = append(itemsToSave, displayEventString)
 			counter += 1
 		}
 	}
 
 	return itemsToSave, nil
-
-}
-
-func checkDynamoForCorrectedValue(artist string) string {
-
-	strArtist := cleanupKnownUserErrorForArtists(artist)
-	strArtist = clients.QueryMusicManParmTable(strArtist)
-
-	return strArtist
 
 }
 
@@ -203,7 +168,7 @@ func HandleArtistIntent(request alexa.Request, resumingPrior bool, sessionData m
 
 		var err error
 		//---- See if there's a corrected value item (in the DynamoDB table) that we should use for the artist
-		strArtist = checkDynamoForCorrectedValue(strArtist)
+		strArtist = common.CheckDynamoForCorrectedValue(strArtist)
 
 		//---- Perform the Fetch of Event Data for the Artist
 		eventData, err = fetchArtistData(strArtist, strArtistMonth)
@@ -303,7 +268,7 @@ func HandleArtistIntent(request alexa.Request, resumingPrior bool, sessionData m
 
 	if alexa.SupportsAPL(&request) {
 
-		customDisplayData.ArtistImgURL = strings.Replace(SongkickArtistImageURL, "ARTISTID", ARTIST_ID, 1)
+		customDisplayData.ArtistVenueImgURL = strings.Replace(SongkickArtistImageURL, "ARTISTID", ARTIST_ID, 1)
 
 		return alexa.NewAPLAskResponse(titleString,
 			primarySSMLText.Build(),
@@ -311,7 +276,7 @@ func HandleArtistIntent(request alexa.Request, resumingPrior bool, sessionData m
 			cardTextContent,
 			false,
 			&sessAttrData,
-			"Events",
+			"Main",
 			&customDisplayData)
 	} else {
 		return alexa.NewSimpleAskResponse(titleString,

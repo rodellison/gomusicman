@@ -56,26 +56,26 @@ type TemplateData struct {
 
 //These properties need to match up to those in the DataSources section of the json apl_template_export.json file
 type APLDataProperties struct {
-	Title                    string   `json:"Title,omitempty"`
-	LayoutToUse              string   `json:"LayoutToUse,omitempty"`
-	HeadingText              string   `json:"HeadingText,omitempty"`
-	Locale                   string   `json:"Locale,omitempty"`
-	HintString               string   `json:"HintString,omitempty"`
-	EventImageUrl            string   `json:"EventImageUrl,omitempty"`
-	HomeBackgroundImageUrl   string   `json:"HomeBackgroundImageUrl,omitempty"`
-	HelpBackgroundImageUrl   string   `json:"HelpBackgroundImageUrl,omitempty"`
-	EventsBackgroundImageUrl string   `json:"EventsBackgroundImageUrl,omitempty"`
-	LogoUrl                  string   `json:"LogoUrl,omitempty"`
-	GeneralSquareImageUrl    string   `json:"GeneralSquareImageUrl,omitempty"`
-	SongkickLogoUrl          string   `json:"SongkickLogoUrl,omitempty"`
-	EventText                []string `json:"EventText,omitempty"`
+	Title                    string   `json:"Title"`
+	LayoutToUse              string   `json:"LayoutToUse"`
+	HeadingText              string   `json:"HeadingText"`
+	Locale                   string   `json:"Locale"`
+	HintString               string   `json:"HintString"`
+	EventImageUrl            string   `json:"EventImageUrl"`
+	BackgroundImageUrl       string   `json:"BackgroundImageUrl"`
+	LogoUrl                  string   `json:"LogoUrl"`
+	GeneralSquareImageUrl    string   `json:"GeneralSquareImageUrl"`
+	SongkickLogoUrl          string   `json:"SongkickLogoUrl"`
+	EventText                []string `json:"EventText"`
+	PhotoAttribution         string `json:"PhotoAttribution"`
+	BackgroundImages         []string `json:"BackgroundImages"`
 }
 
 //This struct will be used to define a container type for passing custom display data to the NewTell/Ask..Response functions
 //It should be customized as needed to support the data needs of the dynamically updated Datasource APL properties
 type CustomDataToDisplay struct {
-	ItemsListContent []string
-	ArtistImgURL string
+	ItemsListContent  []string
+	ArtistVenueImgURL string
 }
 
 //CreateAPLDocAndData is a function that loads json input that contains the APL template for the Skill. Once loaded, the content

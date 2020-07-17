@@ -17,7 +17,7 @@ var (
 
 type MusicManParm struct {
 	SongKickInvalidParm string
-	SongKickValidParm string
+	SongKickValidParm   string
 }
 
 func init() {
@@ -33,7 +33,7 @@ func init() {
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
-	// Create the eventbridge events service client, to be used for putting events
+	// Create the dynamodb service client, to be used for querying for artist or venue input corrections
 	DynamoDBSvcClient = dynamodb.New(sess, &cfg)
 
 	//Making the Tablename an environmental variable so that it can be changed outside of program
@@ -41,23 +41,22 @@ func init() {
 
 }
 
-func QueryMusicManParmTable( strArtistValue string) (string) {
+func QueryMusicManParmTable(strValue string) string {
 
-	strDynamoDBTableName :=os.Getenv("DYNAMO_DB_TABLENAME");
-
+	fmt.Println("Checking MusicManParmTable for entry: ", strValue)
 	params := &dynamodb.GetItemInput{
-		TableName:                 aws.String(strDynamoDBTableName),
+		TableName: aws.String(TableName),
 		Key: map[string]*dynamodb.AttributeValue{
 			"SongKickInvalidParm": {
-				S: aws.String(strArtistValue),
+				S: aws.String(strValue),
 			},
 		},
 	}
 
 	result, err := DynamoDBSvcClient.GetItem(params)
 	if err != nil {
-		fmt.Println(err.Error())
-		return strArtistValue
+		fmt.Println("Error performing DynamoDB GetItem: ", err.Error())
+		return strValue
 	}
 
 	var MusicManParmResult MusicManParm
@@ -69,7 +68,7 @@ func QueryMusicManParmTable( strArtistValue string) (string) {
 		if MusicManParmResult.SongKickValidParm != "" {
 			return MusicManParmResult.SongKickValidParm
 		} else {
-			return strArtistValue
+			return strValue
 
 		}
 	}

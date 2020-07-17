@@ -29,7 +29,6 @@ func TestHandleHelpIntent(t *testing.T) {
 	assert.NotEmpty(t, response.Body.OutputSpeech, "There should be output speech")
 }
 
-
 func TestHandleHelpIntentWithAPL(t *testing.T) {
 
 	context := alexa.Context{

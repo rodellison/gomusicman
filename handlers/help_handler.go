@@ -27,7 +27,6 @@ func HandleHelpIntent(request alexa.Request) alexa.Response {
 	cardText := "Ask a question similar to one of these: \n Who is coming to the Mohawk, or Where are the Rolling Stones playing in June"
 	sessAttrData := make(map[string]interface{})
 
-
 	if alexa.SupportsAPL(&request) {
 
 		//This variable is setup to hold APL Display content
@@ -37,6 +36,7 @@ func HandleHelpIntent(request alexa.Request) alexa.Response {
 		customDisplayData.ItemsListContent[0] = "Alexa, Ask The Music Man:"
 		customDisplayData.ItemsListContent[1] = "When is {artist} playing<br/>" + "Who is coming to {venue}<br/>"
 		customDisplayData.ItemsListContent[2] = "You can also add 'in {month}' to any of the requests above for specific dates"
+		customDisplayData.ArtistVenueImgURL = "NA"
 
 		response = alexa.NewAPLAskResponse(os.Getenv("SkillTitle")+" Help",
 			primarySSMLText.Build(),
@@ -44,7 +44,7 @@ func HandleHelpIntent(request alexa.Request) alexa.Response {
 			cardText,
 			false,
 			&sessAttrData,
-			"Help",
+			"Main",
 			&customDisplayData)
 	} else {
 		response = alexa.NewSimpleAskResponse(os.Getenv("SkillTitle")+" Help",

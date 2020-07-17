@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	theRequest alexa.Request
+	theRequest  alexa.Request
 	theResponse alexa.Response
 )
 
@@ -33,13 +33,13 @@ func init() {
 	//define some dummy handlers for each Intent, and just return dummy response
 	//Testing for the actual handlers will be performed in their own respective test files
 
-	LaunchHandler = func( alexa.Request) alexa.Response {
+	LaunchHandler = func(alexa.Request) alexa.Response {
 		return theResponse
 	}
-	StopCancelHandler = func( alexa.Request) alexa.Response {
+	StopCancelHandler = func(alexa.Request) alexa.Response {
 		return theResponse
 	}
-	HelpHandler = func( alexa.Request) alexa.Response {
+	HelpHandler = func(alexa.Request) alexa.Response {
 		return theResponse
 	}
 	ArtistHandler = func(alexa.Request, bool, models.SessionData) alexa.Response {
@@ -121,6 +121,6 @@ func TestIntentDispatcher(t *testing.T) {
 	response, _ = Handler(theRequest)
 	assert.Equal(t, theResponse, response)
 
-//todo: test YES Handler
+	//todo: test YES Handler
 
 }

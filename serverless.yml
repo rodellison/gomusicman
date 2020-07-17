@@ -72,7 +72,7 @@ functions:
       #The above items are fairly common to all skills, these below are custom for the skill
       APIKey: ${env:${self:custom.ApplicationName}APIKey}
       SNS_TOPIC: ${env:${self:custom.ApplicationName}SNSTopic}
-      DYNAMO_DB_TABLENAME: ${env:${self:custom.ApplicationName}DynamoDBARN}
+      DYNAMO_DB_TABLENAME: MusicManParmTable
     events:
       - alexaSkill: # This sets up and creates the association of the Alexa skill to this Lambda function
           appId: ${env:${self:custom.ApplicationName}AppARN}
