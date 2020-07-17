@@ -28,9 +28,9 @@ func init() {
 
 const (
 	SongkickVenueImageURL = "https://images.sk-static.com/images/media/profile_images/venues/VENUEID/huge_avatar"
-	VENUE_NAME_SLOT  = "venue"
-	VENUE_MONTH_SLOT = "month"
-	VENUE_INTENT = "VenueIntent"
+	VENUE_NAME_SLOT       = "venue"
+	VENUE_MONTH_SLOT      = "month"
+	VENUE_INTENT          = "VenueIntent"
 )
 
 func apiRequestVenueID(urlToGet string) (*models.VenueIDResponse, error) {
@@ -85,7 +85,7 @@ func fetchVenueData(venue, month string) ([]string, error) {
 		return nil, err
 	}
 
-   fmt.Println("URL being fetched: ", urlToFetch)
+	fmt.Println("URL being fetched: ", urlToFetch)
 	//Make an API call to Songkick to get the Venue's Event Calendar
 	venueCalendarResponse, err := APIRequestVenueEventCalendar(urlToFetch)
 	if err != nil {

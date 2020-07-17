@@ -17,6 +17,8 @@ frameworkVersion: '>=1.28.0 <2.0.0'
 
 custom:
   ApplicationName: "TheMusicMan"
+  TableName: "MusicManParmTable"
+  SNSTopic: "MusicManParmFixerSubmissions"
 
 provider:
   name: aws
@@ -27,6 +29,7 @@ provider:
   region: "us-east-1"
   # The default is 6 seconds. Note: API Gateway current maximum is 30 seconds
   #timeout: 10
+  memorySize: 512 # Overwrite the default memory size. Default is 1024
   logRetentionInDays: 30 # Set the default RetentionInDays for a CloudWatch LogGroup
   #extra role permissions required for skill to operate
   iamRoleStatements:
@@ -71,8 +74,8 @@ functions:
       LargeImg: ${env:${self:custom.ApplicationName}LargeImg}
       #The above items are fairly common to all skills, these below are custom for the skill
       APIKey: ${env:${self:custom.ApplicationName}APIKey}
-      SNS_TOPIC: ${env:${self:custom.ApplicationName}SNSTopic}
-      DYNAMO_DB_TABLENAME: MusicManParmTable
+      SNS_TOPIC: ${self:custom.SNSTopic}
+      DYNAMO_DB_TABLENAME: ${self:custom.TableName}
     events:
       - alexaSkill: # This sets up and creates the association of the Alexa skill to this Lambda function
           appId: ${env:${self:custom.ApplicationName}AppARN}

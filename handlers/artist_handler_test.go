@@ -19,7 +19,7 @@ func init() {
 func TestConvertStateAbbreviation(t *testing.T) {
 
 	location := "Virginia Beach, VA, US"
-	expectedResult := "Virginia Beach, Virginia"
+	expectedResult := "Virginia Beach Virginia"
 	//	var artistIDResponse models.ArtistIDResponse
 	response := convertStateAbbreviation(location)
 	assert.Equal(t, expectedResult, response)

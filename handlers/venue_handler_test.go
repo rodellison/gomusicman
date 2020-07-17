@@ -72,7 +72,6 @@ func TestFetchVenueData(t *testing.T) {
 		return &venueIDResponse, nil
 	}
 
-
 	calendarEvents := make([]models.CalendarEvents, 1)
 	calendarEvents[0].Status = "ok"
 	calendarEvents[0].DisplayName = "Some great artist at Dayton Hara Arena (2020-07-01)"

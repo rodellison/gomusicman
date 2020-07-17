@@ -56,19 +56,19 @@ type TemplateData struct {
 
 //These properties need to match up to those in the DataSources section of the json apl_template_export.json file
 type APLDataProperties struct {
-	Title                    string   `json:"Title"`
-	LayoutToUse              string   `json:"LayoutToUse"`
-	HeadingText              string   `json:"HeadingText"`
-	Locale                   string   `json:"Locale"`
-	HintString               string   `json:"HintString"`
-	EventImageUrl            string   `json:"EventImageUrl"`
-	BackgroundImageUrl       string   `json:"BackgroundImageUrl"`
-	LogoUrl                  string   `json:"LogoUrl"`
-	GeneralSquareImageUrl    string   `json:"GeneralSquareImageUrl"`
-	SongkickLogoUrl          string   `json:"SongkickLogoUrl"`
-	EventText                []string `json:"EventText"`
-	PhotoAttribution         string `json:"PhotoAttribution"`
-	BackgroundImages         []string `json:"BackgroundImages"`
+	Title                 string   `json:"Title"`
+	LayoutToUse           string   `json:"LayoutToUse"`
+	HeadingText           string   `json:"HeadingText"`
+	Locale                string   `json:"Locale"`
+	HintString            string   `json:"HintString"`
+	EventImageUrl         string   `json:"EventImageUrl"`
+	BackgroundImageUrl    string   `json:"BackgroundImageUrl"`
+	LogoUrl               string   `json:"LogoUrl"`
+	GeneralSquareImageUrl string   `json:"GeneralSquareImageUrl"`
+	SongkickLogoUrl       string   `json:"SongkickLogoUrl"`
+	EventText             []string `json:"EventText"`
+	PhotoAttribution      string   `json:"PhotoAttribution"`
+	BackgroundImages      []string `json:"BackgroundImages"`
 }
 
 //This struct will be used to define a container type for passing custom display data to the NewTell/Ask..Response functions

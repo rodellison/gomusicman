@@ -179,12 +179,11 @@ func NewAPLTellResponse(title, ssmlPrimaryText, cardText string, endSession bool
 	//This sets which APL layout will be used for displaying content
 	myAPLDocData.APLDataSources.TemplateData.Properties.LayoutToUse = layoutToUse
 	//Setup a random background from our Background image array options
-	backgroundImageInfo := 	strings.Split(myAPLDocData.APLDataSources.TemplateData.Properties.BackgroundImages[rand.Intn(len(myAPLDocData.APLDataSources.TemplateData.Properties.BackgroundImages))], "|")
+	backgroundImageInfo := strings.Split(myAPLDocData.APLDataSources.TemplateData.Properties.BackgroundImages[rand.Intn(len(myAPLDocData.APLDataSources.TemplateData.Properties.BackgroundImages))], "|")
 	backgroundImageURL := backgroundImageInfo[0]
 	backgroundImageAttribution := backgroundImageInfo[1]
 	myAPLDocData.APLDataSources.TemplateData.Properties.BackgroundImageUrl = backgroundImageURL
 	myAPLDocData.APLDataSources.TemplateData.Properties.PhotoAttribution = "Photo by: " + backgroundImageAttribution
-
 
 	switch layoutToUse {
 
@@ -247,7 +246,7 @@ func NewAPLAskResponse(title, ssmlPrimaryText, ssmlRepromptText, cardText string
 	//This sets which APL layout will be used for displaying content
 	myAPLDocData.APLDataSources.TemplateData.Properties.LayoutToUse = layoutToUse
 	//Setup a random background from our Background image array options
-	backgroundImageInfo := 	strings.Split(myAPLDocData.APLDataSources.TemplateData.Properties.BackgroundImages[rand.Intn(len(myAPLDocData.APLDataSources.TemplateData.Properties.BackgroundImages))], "|")
+	backgroundImageInfo := strings.Split(myAPLDocData.APLDataSources.TemplateData.Properties.BackgroundImages[rand.Intn(len(myAPLDocData.APLDataSources.TemplateData.Properties.BackgroundImages))], "|")
 	backgroundImageURL := backgroundImageInfo[0]
 	backgroundImageAttribution := backgroundImageInfo[1]
 	myAPLDocData.APLDataSources.TemplateData.Properties.BackgroundImageUrl = backgroundImageURL
