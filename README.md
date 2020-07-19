@@ -1,4 +1,4 @@
-[![rodellison](https://circleci.com/gh/rodellison/GoMusicMan.svg?style=shield)](https://app.circleci.com/pipelines/github/rodellison/GoMusicMan)
+[![rodellison](https://circleci.com/gh/rodellison/gomusicman.svg?style=shield)](https://app.circleci.com/pipelines/github/rodellison/gomusicman)
 
 _______________________
 # The Music Man for Amazon Alexa
