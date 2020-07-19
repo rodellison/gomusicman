@@ -67,7 +67,7 @@ func TestNotAuthorized(t *testing.T) {
 	}
 	response, _ := Handler(*theNotAuthRequest)
 	assert.NotEmpty(t, response, "The response should not be empty", false)
-	assert.Contains(t, response.Body.OutputSpeech.SSML, "please enable and use this skill through an approved alexa device.")
+	assert.Contains(t, response.Body.OutputSpeech.SSML, "Please enable and use this skill through an approved Alexa device.")
 }
 
 func TestIntentDispatcher(t *testing.T) {

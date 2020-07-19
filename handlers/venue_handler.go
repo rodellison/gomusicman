@@ -1,13 +1,11 @@
 package handlers
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/rodellison/gomusicman/alexa"
 	"github.com/rodellison/gomusicman/clients"
 	"github.com/rodellison/gomusicman/common"
 	"github.com/rodellison/gomusicman/models"
-	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
@@ -21,8 +19,8 @@ var (
 )
 
 func init() {
-	APIRequestVenueID = apiRequestVenueID
-	APIRequestVenueEventCalendar = apiRequestVenueEventCalendar
+	APIRequestVenueID = clients.APIRequestVenueID
+	APIRequestVenueEventCalendar = clients.APIRequestEventCalendar
 	VENUE_ID = "NA" //This is a default value to use in the APL template. It will indicate to the APL to just use the default image as there isnt an event/Venue image available
 }
 
@@ -33,37 +31,11 @@ const (
 	VENUE_INTENT          = "VenueIntent"
 )
 
-func apiRequestVenueID(urlToGet string) (*models.VenueIDResponse, error) {
-
-	response, err := clients.GetURL(urlToGet)
-	if err != nil {
-		return &models.VenueIDResponse{}, nil
-	} else {
-		data, _ := ioutil.ReadAll(response.Body)
-		var venueIDReponse models.VenueIDResponse
-		json.Unmarshal(data, &venueIDReponse)
-		return &venueIDReponse, nil
-	}
-}
-
-func apiRequestVenueEventCalendar(urlToGet string) (*models.CalendarResponse, error) {
-
-	response, err := clients.GetURL(urlToGet)
-	if err != nil {
-		return &models.CalendarResponse{}, nil
-	} else {
-		data, _ := ioutil.ReadAll(response.Body)
-		var calendarReponse models.CalendarResponse
-		json.Unmarshal(data, &calendarReponse)
-		return &calendarReponse, nil
-	}
-}
-
 func fetchVenueData(venue, month string) ([]string, error) {
 
 	thisMonth := strings.Title(month)
 
-	urlToFetch, err := clients.ConstructURLRequest("VenueQuery", venue)
+	urlToFetch, err := clients.ConstructURLRequest("VenueQuery", venue, "", "")
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +52,7 @@ func fetchVenueData(venue, month string) ([]string, error) {
 
 	//With the VenueID, construct the Songkick API Calendar request url
 	VENUE_ID = strconv.Itoa(venueIDResponse.ResultsPage.Results.Venue[0].ID)
-	urlToFetch, err = clients.ConstructURLRequest("VenueCalendar", VENUE_ID)
+	urlToFetch, err = clients.ConstructURLRequest("VenueCalendar", VENUE_ID, "", "")
 	if err != nil {
 		return nil, err
 	}
@@ -230,7 +202,7 @@ func HandleVenueIntent(request alexa.Request, resumingPrior bool, sessionData mo
 				customDisplayData.ItemsListContent[idx] = item
 				cardTextContent += item + "\n"
 			}
-			primarySSMLText.Say("There are no additional events. Please ask another question like, Who is playing at Staples Center, or Where is Iron Maiden playing. Say Cancel to exit. ")
+			primarySSMLText.Say("There are no additional events. Please ask another question like, Who is playing at Staples Center,  Where is Iron Maiden playing, or What is happening in Fort Lauderdale. Say Cancel to exit. ")
 			primarySSMLText.Pause("1000")
 			cardTextContent += "There are no additional events.\n"
 
@@ -245,7 +217,7 @@ func HandleVenueIntent(request alexa.Request, resumingPrior bool, sessionData mo
 			}
 			primarySSMLText.Say("If you would like to ask another question, try one of these:")
 			primarySSMLText.Pause("500")
-			primarySSMLText.Say("Who is playing at Staples Center, or Where is Iron Maiden playing. You can say Cancel to exit. ")
+			primarySSMLText.Say("Who is playing at Staples Center,  Where is Iron Maiden playing, or What is happening in Fort Lauderdale. You can say Cancel to exit. ")
 			primarySSMLText.Pause("1000")
 
 			titleString = "There are no upcoming events at " + strings.Title(strVenue)

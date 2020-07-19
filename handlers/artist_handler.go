@@ -1,13 +1,11 @@
 package handlers
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/rodellison/gomusicman/alexa"
 	"github.com/rodellison/gomusicman/clients"
 	"github.com/rodellison/gomusicman/common"
 	"github.com/rodellison/gomusicman/models"
-	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
@@ -21,8 +19,8 @@ var (
 )
 
 func init() {
-	APIRequestArtistID = apiRequestArtistID
-	APIRequestArtistEventCalendar = apiRequestArtistEventCalendar
+	APIRequestArtistID = clients.APIRequestArtistID
+	APIRequestArtistEventCalendar = clients.APIRequestEventCalendar
 	ARTIST_ID = "NA" //This is a default value to use in the APL template. It will indicate to the APL to just use the default image as there isnt an event/artist image available
 }
 
@@ -39,47 +37,11 @@ type ArtistData struct {
 	Eventdata []string
 }
 
-func apiRequestArtistID(urlToGet string) (*models.ArtistIDResponse, error) {
-
-	response, err := clients.GetURL(urlToGet)
-	if err != nil {
-		return &models.ArtistIDResponse{}, nil
-	} else {
-		data, _ := ioutil.ReadAll(response.Body)
-		var artistIDReponse models.ArtistIDResponse
-		json.Unmarshal(data, &artistIDReponse)
-		return &artistIDReponse, nil
-	}
-}
-
-func apiRequestArtistEventCalendar(urlToGet string) (*models.CalendarResponse, error) {
-
-	response, err := clients.GetURL(urlToGet)
-	if err != nil {
-		return &models.CalendarResponse{}, nil
-	} else {
-		data, _ := ioutil.ReadAll(response.Body)
-		var calendarReponse models.CalendarResponse
-		json.Unmarshal(data, &calendarReponse)
-		return &calendarReponse, nil
-	}
-}
-
-func convertStateAbbreviation(stateLocation string) string {
-
-	stateLocation = stateLocation[0:strings.LastIndex(stateLocation, ",")]
-	//Songkick uses the State abbreviation so convert it. The state is now the LAST two chars in this string..
-	thisStateLoc := strings.LastIndex(stateLocation, ",")
-	value := stateLocation[0:thisStateLoc] + " " + models.USC[stateLocation[thisStateLoc+2:]]
-	return value
-
-}
-
 func fetchArtistData(artist, month string) ([]string, error) {
 
 	thisMonth := strings.Title(month)
 
-	urlToFetch, err := clients.ConstructURLRequest("ArtistQuery", artist)
+	urlToFetch, err := clients.ConstructURLRequest("ArtistQuery", artist, "", "")
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +58,7 @@ func fetchArtistData(artist, month string) ([]string, error) {
 
 	//With the ArtistID, construct the Songkick API Calendar request url
 	ARTIST_ID = strconv.Itoa(artistIDResponse.ResultsPage.Results.Artist[0].ID)
-	urlToFetch, err = clients.ConstructURLRequest("ArtistCalendar", ARTIST_ID)
+	urlToFetch, err = clients.ConstructURLRequest("ArtistCalendar", ARTIST_ID, "", "")
 	if err != nil {
 		return nil, err
 	}
@@ -118,7 +80,7 @@ func fetchArtistData(artist, month string) ([]string, error) {
 		thisLocation := item.Location.City
 		if strings.Contains(thisLocation, ", US") {
 			//Songkick uses the State abbreviation so convert it. The state is now the LAST two chars in this string..
-			thisLocation = convertStateAbbreviation(thisLocation)
+			thisLocation = common.ConvertStateAbbreviation(thisLocation)
 		}
 
 		if thisMonth != "" && strings.Contains(dateString, " "+thisMonth+" ") || thisMonth == "" {
@@ -243,7 +205,7 @@ func HandleArtistIntent(request alexa.Request, resumingPrior bool, sessionData m
 				customDisplayData.ItemsListContent[idx] = item
 				cardTextContent += item + "\n"
 			}
-			primarySSMLText.Say("There are no additional events. Please ask another question like, Who is playing at Staples Center, or Where is Iron Maiden playing. Say Cancel to exit. ")
+			primarySSMLText.Say("There are no additional events. Please ask another question like, Who is playing at Staples Center,  Where is Iron Maiden playing, or What is happening in Fort Lauderdale. Say Cancel to exit. ")
 			primarySSMLText.Pause("1000")
 			cardTextContent += "There are no additional events.\n"
 
@@ -258,7 +220,7 @@ func HandleArtistIntent(request alexa.Request, resumingPrior bool, sessionData m
 			}
 			primarySSMLText.Say("If you would like to ask another question, try one of these:")
 			primarySSMLText.Pause("500")
-			primarySSMLText.Say("Who is playing at Staples Center, or Where is Iron Maiden playing. You can say Cancel to exit. ")
+			primarySSMLText.Say("Who is playing at Staples Center, Where is Iron Maiden playing, or What is happening in Fort Lauderdale. You can say Cancel to exit. ")
 			primarySSMLText.Pause("1000")
 
 			titleString = "There are no upcoming events for " + strings.Title(strArtist)

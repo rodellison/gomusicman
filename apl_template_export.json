@@ -36,6 +36,7 @@
                 "dimensions": {
                     "textSizeBody": 40,
                     "textSizePrimary": 24,
+                    "textSizePrimarySmall": 22,
                     "textSizePrimary2": 30,
                     "textSizePrimary3": 36,
                     "textSizeSecondary": 40,
@@ -97,6 +98,11 @@
                     "fontSize": "@textSizePrimary"
                 }
             },
+            "mixinPrimarySmall": {
+                "values": {
+                    "fontSize": "@textSizePrimarySmall"
+                }
+            },
             "mixinPrimary2": {
                 "values": {
                     "fontSize": "@textSizePrimary2"
@@ -111,6 +117,12 @@
                 "values": {
                     "fontSize": "@textSizeSecondary"
                 }
+            },
+            "textStylePrimarySmall": {
+                "extend": [
+                    "textStyleBase1",
+                    "mixinPrimarySmall"
+                ]
             },
             "textStylePrimary": {
                 "extend": [
@@ -205,7 +217,7 @@
                                         "items": [
                                             {
                                                 "type": "Text",
-                                                "text": "Ask a question similar to one of these:",
+                                                "text": "${payload.musicManTemplateData.properties.EventText[0]}",
                                                 "paddingTop": 30,
                                                 "style": "textStylePrimary",
                                                 "width": "90vw",
@@ -213,7 +225,7 @@
                                             },
                                             {
                                                 "type": "Text",
-                                                "text": "Who's coming to Staples Center",
+                                                "text": "${payload.musicManTemplateData.properties.EventText[1]}",
                                                 "paddingTop": 20,
                                                 "style": "textStylePrimary",
                                                 "width": "90vw",
@@ -221,7 +233,7 @@
                                             },
                                             {
                                                 "type": "Text",
-                                                "text": "Where is Iron Maiden playing in July",
+                                                "text": "${payload.musicManTemplateData.properties.EventText[2]}",
                                                 "paddingTop": 20,
                                                 "style": "textStylePrimary",
                                                 "width": "90vw",
@@ -298,19 +310,19 @@
                                                         "items": [
                                                             {
                                                                 "type": "Text",
-                                                                "text": "Ask a question similar to one of these:",
+                                                                "text": "${payload.musicManTemplateData.properties.EventText[0]}",
                                                                 "paddingTop": 40,
                                                                 "style": "textStylePrimary"
                                                             },
                                                             {
                                                                 "type": "Text",
-                                                                "text": "Who's coming to Staples Center",
+                                                                "text": "${payload.musicManTemplateData.properties.EventText[1]}",
                                                                 "paddingTop": 20,
                                                                 "style": "textStylePrimary"
                                                             },
                                                             {
                                                                 "type": "Text",
-                                                                "text": "Where is Iron Maiden playing in July",
+                                                                "text": "${payload.musicManTemplateData.properties.EventText[2]}",
                                                                 "paddingTop": 20,
                                                                 "style": "textStylePrimary"
                                                             }
@@ -419,19 +431,19 @@
                                                                 "type": "Text",
                                                                 "style": "textStylePrimary",
                                                                 "paddingTop": 40,
-                                                                "text": "Ask a question similar to one of these:"
+                                                                "text": "${payload.musicManTemplateData.properties.EventText[0]}"
                                                             },
                                                             {
                                                                 "type": "Text",
                                                                 "style": "textStylePrimary",
                                                                 "paddingTop": 20,
-                                                                "text": "Who's coming to Staples Center"
+                                                                "text": "${payload.musicManTemplateData.properties.EventText[1]}"
                                                             },
                                                             {
                                                                 "type": "Text",
                                                                 "style": "textStylePrimary",
                                                                 "paddingTop": 20,
-                                                                "text": "Where is Iron Maiden playing in July"
+                                                                "text": "${payload.musicManTemplateData.properties.EventText[2]}"
                                                             }
                                                         ]
                                                     }
@@ -625,7 +637,7 @@
                                             },
                                             {
                                                 "type": "Text",
-                                                "style": "textStylePrimary",
+                                                "style": "textStylePrimarySmall",
                                                 "paddingTop": 20,
                                                 "text": "${payload.musicManTemplateData.properties.EventText[0]}"
                                             },
@@ -633,13 +645,13 @@
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[1]}",
                                                 "paddingTop": 20,
-                                                "style": "textStylePrimary"
+                                                "style": "textStylePrimarySmall"
                                             },
                                             {
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[2]}",
                                                 "paddingTop": 20,
-                                                "style": "textStylePrimary"
+                                                "style": "textStylePrimarySmall"
                                             }
                                         ]
                                     }
@@ -749,19 +761,19 @@
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[0]}",
                                                 "paddingTop": 20,
-                                                "style": "textStylePrimary2"
+                                                "style": "textStylePrimarySmall"
                                             },
                                             {
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[1]}",
                                                 "paddingTop": 20,
-                                                "style": "textStylePrimary2"
+                                                "style": "textStylePrimarySmall"
                                             },
                                             {
                                                 "type": "Text",
                                                 "text": "${payload.musicManTemplateData.properties.EventText[2]}",
                                                 "paddingTop": 20,
-                                                "style": "textStylePrimary2"
+                                                "style": "textStylePrimarySmall"
                                             }
                                         ]
                                     }
@@ -840,8 +852,8 @@
                                                 "when": "${payload.musicManTemplateData.properties.EventImageUrl != 'NA'}",
                                                 "type": "Image",
                                                 "source": "${payload.musicManTemplateData.properties.EventImageUrl}",
-                                                "width": 340,
-                                                "height": 360,
+                                                "width": 300,
+                                                "height": 300,
                                                 "scale": "best-fit",
                                                 "align": "top"
                                             },
@@ -849,8 +861,8 @@
                                                 "when": "${payload.musicManTemplateData.properties.EventImageUrl == 'NA'}",
                                                 "type": "Image",
                                                 "source": "${payload.musicManTemplateData.properties.GeneralSquareImageUrl}",
-                                                "width": 340,
-                                                "height": 360,
+                                                "width": 300,
+                                                "height": 300,
                                                 "scale": "best-fit",
                                                 "align": "top"
                                             }
@@ -869,19 +881,19 @@
                                             },
                                             {
                                                 "type": "Text",
-                                                "style": "textStylePrimary2",
+                                                "style": "textStylePrimarySmall",
                                                 "paddingTop": 20,
                                                 "text": "${payload.musicManTemplateData.properties.EventText[0]}"
                                             },
                                             {
                                                 "type": "Text",
-                                                "style": "textStylePrimary2",
+                                                "style": "textStylePrimarySmall",
                                                 "paddingTop": 20,
                                                 "text": "${payload.musicManTemplateData.properties.EventText[1]}"
                                             },
                                             {
                                                 "type": "Text",
-                                                "style": "textStylePrimary2",
+                                                "style": "textStylePrimarySmall",
                                                 "paddingTop": 20,
                                                 "text": "${payload.musicManTemplateData.properties.EventText[2]}"
                                             }
@@ -962,8 +974,8 @@
                                                 "when": "${payload.musicManTemplateData.properties.EventImageUrl != 'NA'}",
                                                 "type": "Image",
                                                 "source": "${payload.musicManTemplateData.properties.EventImageUrl}",
-                                                "width": 340,
-                                                "height": 360,
+                                                "width": 300,
+                                                "height": 300,
                                                 "scale": "best-fit",
                                                 "align": "top"
                                             },
@@ -971,8 +983,8 @@
                                                 "when": "${payload.musicManTemplateData.properties.EventImageUrl == 'NA'}",
                                                 "type": "Image",
                                                 "source": "${payload.musicManTemplateData.properties.GeneralSquareImageUrl}",
-                                                "width": 340,
-                                                "height": 360,
+                                                "width": 300,
+                                                "height": 300,
                                                 "scale": "best-fit",
                                                 "align": "top"
                                             }
@@ -991,19 +1003,19 @@
                                             },
                                             {
                                                 "type": "Text",
-                                                "style": "textStylePrimary",
+                                                "style": "textStylePrimarySmall",
                                                 "paddingTop": 15,
                                                 "text": "${payload.musicManTemplateData.properties.EventText[0]}"
                                             },
                                             {
                                                 "type": "Text",
-                                                "style": "textStylePrimary",
+                                                "style": "textStylePrimarySmall",
                                                 "paddingTop": 15,
                                                 "text": "${payload.musicManTemplateData.properties.EventText[1]}"
                                             },
                                             {
                                                 "type": "Text",
-                                                "style": "textStylePrimary",
+                                                "style": "textStylePrimarySmall",
                                                 "paddingTop": 15,
                                                 "text": "${payload.musicManTemplateData.properties.EventText[2]}"
                                             }

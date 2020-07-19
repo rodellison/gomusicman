@@ -12,7 +12,7 @@ import (
 var (
 	//These var definitions to help with Mock testing
 	StopCancelHandler, HelpHandler, LaunchHandler func(alexa.Request) alexa.Response
-	ArtistHandler, VenueHandler                   func(alexa.Request, bool, models.SessionData) alexa.Response
+	ArtistHandler, VenueHandler, LocationHandler  func(alexa.Request, bool, models.SessionData) alexa.Response
 )
 
 func init() {
@@ -22,6 +22,7 @@ func init() {
 	LaunchHandler = handlers.HandleLaunchIntent
 	ArtistHandler = handlers.HandleArtistIntent
 	VenueHandler = handlers.HandleVenueIntent
+	LocationHandler = handlers.HandleLocationIntent
 }
 
 //Centralized function to steer incoming alexa requests to the appropriate handler function
@@ -39,6 +40,8 @@ func IntentDispatcher(request alexa.Request) alexa.Response {
 		response = ArtistHandler(request, false, sessionData)
 	case "VenueIntent":
 		response = VenueHandler(request, false, sessionData)
+	case "LocationIntent":
+		response = LocationHandler(request, false, sessionData)
 	case alexa.YesIntent:
 
 		incomingSessionAttrs := request.Session.Attributes
@@ -49,10 +52,13 @@ func IntentDispatcher(request alexa.Request) alexa.Response {
 		} else {
 			//because we've unmashalled the session data already, rather than do it again inside the respective handlers,
 			//just pass it along as a parm.
-			if sessionData.Intent == "ArtistIntent" {
+			switch sessionData.Intent {
+			case "ArtistIntent":
 				response = ArtistHandler(request, true, sessionData)
-			} else {
+			case "VenueIntent":
 				response = VenueHandler(request, true, sessionData)
+			case "LocationIntent":
+				response = LocationHandler(request, true, sessionData)
 			}
 		}
 

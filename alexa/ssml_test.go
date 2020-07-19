@@ -26,6 +26,6 @@ func TestBuildSSML(t *testing.T) {
 
 	result := testSSMLString.Build()
 
-	assert.Contains(t, result, "<speak>hello <break time='1000ms'/> world </speak>", "SSML build creates <speak> content")
+	assert.Contains(t, result, "<speak>Hello <break time='1000ms'/> World </speak>", "SSML build creates <speak> content")
 
 }

@@ -102,5 +102,5 @@ func TestNewAPLAskResponseHandlesAPLError(t *testing.T) {
 
 func TestParseString(t *testing.T) {
 	response := ParseString("This & That")
-	assert.Equal(t, "this  and  that", response)
+	assert.Equal(t, "This  and  That", response)
 }

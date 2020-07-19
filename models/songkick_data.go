@@ -13,6 +13,8 @@ type CalendarResponse struct {
 type CalendarResultsPage struct {
 	Status       string          `json:"status"`
 	Results      CalendarResults `json:"results"`
+	PerPage      int             `json:"perPage"`
+	Page         int             `json:"page"`
 	TotalEntries int             `json:"totalEntries"`
 }
 
@@ -85,4 +87,49 @@ type Venue struct {
 			DisplayName string `json:"displayName"`
 		} `json:"state"`
 	} `json:"city,omitempty"`
+}
+
+//-----------------Location ID Structure
+
+type LocationIDResponse struct {
+	ResultsPage LocationResultsPage `json:"resultsPage"`
+}
+
+type LocationResultsPage struct {
+	Status       string          `json:"status"`
+	Results      LocationResults `json:"results"`
+	PerPage      int             `json:"perPage"`
+	Page         int             `json:"page"`
+	TotalEntries int             `json:"totalEntries"`
+}
+
+type LocationResults struct {
+	Location []Location `json:"location"`
+}
+
+type Location struct {
+	City struct {
+		Lat     float64 `json:"lat"`
+		Lng     float64 `json:"lng"`
+		Country struct {
+			DisplayName string `json:"displayName"`
+		} `json:"country"`
+		State struct {
+			DisplayName string `json:"displayName"`
+		} `json:"state"`
+		DisplayName string `json:"displayName"`
+	} `json:"city,omitempty"`
+	MetroArea struct {
+		Lat     float64 `json:"lat"`
+		Lng     float64 `json:"lng"`
+		Country struct {
+			DisplayName string `json:"displayName"`
+		} `json:"country"`
+		URI   string `json:"uri"`
+		State struct {
+			DisplayName string `json:"displayName"`
+		} `json:"state"`
+		DisplayName string `json:"displayName"`
+		ID          int    `json:"id"`
+	} `json:"metroArea,omitempty"`
 }

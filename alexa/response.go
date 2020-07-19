@@ -81,14 +81,14 @@ type Payload struct {
 
 //Response oriented functions ------------------------------------
 func ParseString(text string) string {
-	text = strings.ToLower(text)
+
+	text = strings.Replace(text, " US ", " u. s. ", -1)
+
+	//	text = strings.ToLower(text)
 	text = strings.Replace(text, "&", " and ", -1)
 	text = strings.Replace(text, "+", " plus ", -1)
 
-	text = strings.Replace(text, "AT&T", "a. t. and t", -1)
-	text = strings.Replace(text, "BB&T", "b. b. and t", -1)
-	text = strings.Replace(text, "US", "u. s.", -1)
-
+	text = strings.Replace(text, " Live ", "<phoneme alphabet='ipa' ph='laɪv'>live</phoneme>", -1)
 	return text
 }
 
