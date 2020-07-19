@@ -27,3 +27,4 @@ deploy: clean copyJson buildForAWS
 gomodgen:
 	chmod u+x gomod.sh
 	./gomod.sh
+

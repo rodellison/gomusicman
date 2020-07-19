@@ -30,5 +30,8 @@ coverage.html
 #images
 images/
 
+#exports.sh is where we set Environmental variables during build.. Don't commit this file as it could have secrets
+exports.sh
+
 
 

@@ -15,10 +15,6 @@ service: gomusicman
 # frameworkVersion: "=X.X.X"
 frameworkVersion: '>=1.28.0 <2.0.0'
 
-custom:
-  ApplicationName: "TheMusicMan"
-  TableName: "MusicManParmTable"
-
 provider:
   name: aws
   runtime: go1.x
@@ -35,11 +31,11 @@ provider:
     - Effect: "Allow"
       Action:
         - dynamodb:GetItem
-      Resource: ${env:${self:custom.ApplicationName}DynamoDBARN}
+      Resource: ${env:DynamoDBARN}
     - Effect: "Allow"
       Action:
         - sns:Publish
-      Resource: ${env:${self:custom.ApplicationName}SNSTopic}
+      Resource: ${env:SNSTopic}
 
 #BY DEFAULT, these logging group/events role statements come built-in
 #    - Effect: "Allow"
@@ -64,19 +60,17 @@ functions:
     environment:
       #ENV values should be used to provide defaults as well as secure the Alexa skill backend code, to ensure it can only be invoked
       #by our Alexa skill defined in the Developer console
-      #${env:${self:custom.ApplicationName}AppARN} concatenates to:  TheMusicManAppArn and similar for those below.
-      #Make sure these environmental variables are in place before deploying..
-      AppARN: ${env:${self:custom.ApplicationName}AppARN}
-      AplTemplate: ${env:${self:custom.ApplicationName}AplTemplate}
-      SkillTitle: ${env:${self:custom.ApplicationName}SkillTitle}
-      SmallImg: ${env:${self:custom.ApplicationName}SmallImg}
-      LargeImg: ${env:${self:custom.ApplicationName}LargeImg}
+      AppARN: ${env:AppARN}
+      AplTemplate: ${env:AplTemplate}
+      SkillTitle: ${env:SkillTitle}
+      SmallImg: ${env:SmallImg}
+      LargeImg: ${env:LargeImg}
       #The above items are fairly common to all skills, these below are custom for the skill
-      APIKey: ${env:${self:custom.ApplicationName}APIKey}
-      SNS_TOPIC: ${env:${self:custom.ApplicationName}SNSTopic}
-      DYNAMO_DB_TABLENAME: ${self:custom.TableName}
+      APIKey: ${env:APIKey}
+      SNS_TOPIC: ${env:SNSTopic}
+      DYNAMO_DB_TABLENAME: ${env:DynamoDBTable}
     events:
       - alexaSkill: # This sets up and creates the association of the Alexa skill to this Lambda function
-          appId: ${env:${self:custom.ApplicationName}AppARN}
+          appId: ${env:AppARN}
           enabled: true
 
