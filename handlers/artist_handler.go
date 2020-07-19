@@ -205,7 +205,7 @@ func HandleArtistIntent(request alexa.Request, resumingPrior bool, sessionData m
 				customDisplayData.ItemsListContent[idx] = item
 				cardTextContent += item + "\n"
 			}
-			primarySSMLText.Say("There are no additional events. Please ask another question like, Who is playing at Staples Center,  Where is Iron Maiden playing, or What is happening in Fort Lauderdale. Say Cancel to exit. ")
+			primarySSMLText.Say("There are no additional events. Please ask another question like, Who is coming to Staples Center,  Where is Iron Maiden playing, or What is happening in Fort Lauderdale, Florida. Say Cancel to exit. ")
 			primarySSMLText.Pause("1000")
 			cardTextContent += "There are no additional events.\n"
 
@@ -220,7 +220,7 @@ func HandleArtistIntent(request alexa.Request, resumingPrior bool, sessionData m
 			}
 			primarySSMLText.Say("If you would like to ask another question, try one of these:")
 			primarySSMLText.Pause("500")
-			primarySSMLText.Say("Who is playing at Staples Center, Where is Iron Maiden playing, or What is happening in Fort Lauderdale. You can say Cancel to exit. ")
+			primarySSMLText.Say("Who is coming to Staples Center, Where is Iron Maiden playing, or What is happening in Fort Lauderdale, Florida. You can say Cancel to exit. ")
 			primarySSMLText.Pause("1000")
 
 			titleString = "There are no upcoming events for " + strings.Title(strArtist)
