@@ -153,7 +153,7 @@ func HandleArtistIntent(request alexa.Request, resumingPrior bool, sessionData m
 		}
 		primarySSMLText.Say(speechText)
 		primarySSMLText.Pause("1000")
-		cardTextContent += speechText + "\n"
+		cardTextContent += speechText + "\n\n"
 
 	}
 

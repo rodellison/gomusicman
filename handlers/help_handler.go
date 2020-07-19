@@ -34,7 +34,7 @@ func HandleHelpIntent(request alexa.Request) alexa.Response {
 	repromptSSMLText.Pause("500")
 	repromptSSMLText.Say("Who is coming to the Mohawk, or Where is Iron Maiden playing, or What is happening in Fort Lauderdale, Florida?")
 
-	cardText := "Ask a question similar to one of these:\nWho is coming to the Mohawk?\nWhere is Iron Maiden playing in June?\nWHAT is happening in Fort Lauderdale, Florida?"
+	cardText := "Ask a question similar to one of these:\n\nWho is coming to the Mohawk?\nWhere is Iron Maiden playing in June?\nWHAT is happening in Fort Lauderdale, Florida?"
 	sessAttrData := make(map[string]interface{})
 
 	if alexa.SupportsAPL(&request) {

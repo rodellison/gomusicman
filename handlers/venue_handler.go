@@ -150,7 +150,7 @@ func HandleVenueIntent(request alexa.Request, resumingPrior bool, sessionData mo
 		}
 		primarySSMLText.Say(speechText)
 		primarySSMLText.Pause("1000")
-		cardTextContent += speechText + "\n"
+		cardTextContent += speechText + "\n\n"
 
 	}
 

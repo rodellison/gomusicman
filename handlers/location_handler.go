@@ -184,10 +184,10 @@ func HandleLocationIntent(request alexa.Request, resumingPrior bool, sessionData
 		}
 
 		if strLocationState != "" {
-			speechText += strLocationState
+			speechText += ", " + strLocationState
 		}
 		if strLocationCountry != "" {
-			speechText += strLocationCountry
+			speechText += ", " + strLocationCountry
 		}
 		if strLocationMonth != "" {
 			speechText += " in " + strLocationMonth
@@ -195,7 +195,7 @@ func HandleLocationIntent(request alexa.Request, resumingPrior bool, sessionData
 
 		primarySSMLText.Say(speechText)
 		primarySSMLText.Pause("1000")
-		cardTextContent += speechText + "\n"
+		cardTextContent += speechText + "\n\n"
 
 	}
 
@@ -230,19 +230,19 @@ func HandleLocationIntent(request alexa.Request, resumingPrior bool, sessionData
 
 		sessionData.Eventdata = eventData
 		sessionData.Intent = LOCATION_INTENT
-		sessionData.Name = strLocationCity
+		strCityStateCountry := strLocationCity
+		if strLocationState != "" {
+			strCityStateCountry += ", " + strLocationState
+		}
+		if strLocationCountry != "" {
+			strCityStateCountry += ", " + strLocationCountry
+		}
+
+		sessionData.Name = strCityStateCountry
 		sessionData.ID = LOCATION_ID
 		sessAttrData["dataToSave"] = sessionData
 
-		titleString = "Upcoming events near " + strLocationCity
-		if strLocationState != "" {
-			sessionData.Name += ", " + strLocationState
-			titleString += ", " + strLocationState
-		}
-		if strLocationCountry != "" {
-			sessionData.Name += ", " + strLocationCountry
-			titleString += ", " + strLocationCountry
-		}
+		titleString = "Upcoming events near " + strCityStateCountry
 
 	} else {
 
