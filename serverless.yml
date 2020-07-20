@@ -5,7 +5,7 @@
 # For full config options, check the docs:
 # https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml/
 
-service: alexa-slick-dealer
+service: gomusicman
 # app and org for use with dashboard.serverless.com
 #app: your-app-name
 #org: your-org-name
@@ -24,29 +24,18 @@ provider:
   region: "us-east-1"
   # The default is 6 seconds. Note: API Gateway current maximum is 30 seconds
   #timeout: 10
+  memorySize: 512 # Overwrite the default memory size. Default is 1024
   logRetentionInDays: 30 # Set the default RetentionInDays for a CloudWatch LogGroup
-  # you can ADD statements to the Lambda function's IAM Role (iamRoleStatements) here
-#  iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
-#        - "events:PutEvents"
-#      Resource: "arn:aws:events:us-east-1:619676567607:event-bus/conchrepublic"
-#    - Effect: "Allow"
-#      Action:
-#        - dynamodb:Query
-#        - dynamodb:Scan
-#        - dynamodb:GetItem
-#        - dynamodb:PutItem
-#        - dynamodb:UpdateItem
-#        - dynamodb:DeleteItem
-#      Resource: [
-#        "arn:aws:dynamodb:us-east-1:619676567607:table/FloridaKeysEvents",
-#       "arn:aws:dynamodb:us-east-1:619676567607:table/FloridaKeysEventsTest"
-#     ]
-#   - Effect: "Allow"
-#    Action:
-#        - "sns:Publish"
-#      Resource: "arn:aws:sns:*:619676567607:FloridaKeysTableUpdate"
+  #extra role permissions required for skill to operate
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - dynamodb:GetItem
+      Resource: ${env:DynamoDBARN}
+    - Effect: "Allow"
+      Action:
+        - sns:Publish
+      Resource: ${env:SNSTopic}
 
 #BY DEFAULT, these logging group/events role statements come built-in
 #    - Effect: "Allow"
@@ -76,8 +65,12 @@ functions:
       SkillTitle: ${env:SkillTitle}
       SmallImg: ${env:SmallImg}
       LargeImg: ${env:LargeImg}
+      #The above items are fairly common to all skills, these below are custom for the skill
+      APIKey: ${env:APIKey}
+      SNS_TOPIC: ${env:SNSTopic}
+      DYNAMO_DB_TABLENAME: ${env:DynamoDBTable}
     events:
-      - alexaSkill:
+      - alexaSkill: # This sets up and creates the association of the Alexa skill to this Lambda function
           appId: ${env:AppARN}
           enabled: true
 

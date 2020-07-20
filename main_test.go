@@ -1,15 +1,23 @@
 package main
 
 import (
-	"github.com/rodellison/alexa-slick-dealer/alexa"
+	"fmt"
+	"github.com/rodellison/gomusicman/alexa"
+	"github.com/rodellison/gomusicman/models"
 	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
 )
 
-func TestHandleLaunchIntent(t *testing.T) {
+var (
+	theRequest  alexa.Request
+	theResponse alexa.Response
+)
 
-	theRequest := &alexa.Request{
+func init() {
+	//Set up some dummy request and response objects with minimal data
+	theResponse = alexa.Response{}
+	theRequest = alexa.Request{
 		Version: "1.0",
 		Session: alexa.Session{
 			Application: alexa.Application{
@@ -22,196 +30,33 @@ func TestHandleLaunchIntent(t *testing.T) {
 		Context: alexa.Context{},
 	}
 
-	response, _ := Handler(*theRequest)
-	assert.NotEmpty(t, response, "The response should not be empty")
-	assert.NotEmpty(t, response.Body.OutputSpeech, "There should be output speech")
-}
+	//define some dummy handlers for each Intent, and just return dummy response
+	//Testing for the actual handlers will be performed in their own respective test files
 
-func TestHandleFrontpageDealIntent(t *testing.T) {
-
-	theRequest := &alexa.Request{
-		Version: "1.0",
-		Session: alexa.Session{
-			Application: alexa.Application{
-				ApplicationID: os.Getenv("AppARN"),
-			},
-		},
-		Body: alexa.ReqBody{
-			Type: "IntentRequest",
-			Intent: alexa.Intent{
-				Name:  "FrontpageDealIntent",
-				Slots: nil,
-			},
-		},
-		Context: alexa.Context{},
+	LaunchHandler = func(alexa.Request) alexa.Response {
+		return theResponse
+	}
+	StopCancelHandler = func(alexa.Request) alexa.Response {
+		return theResponse
+	}
+	HelpHandler = func(alexa.Request) alexa.Response {
+		return theResponse
+	}
+	ArtistHandler = func(alexa.Request, bool, models.SessionData) alexa.Response {
+		return theResponse
+	}
+	VenueHandler = func(alexa.Request, bool, models.SessionData) alexa.Response {
+		return theResponse
+	}
+	NoHandler = func(alexa.Request) alexa.Response {
+		return theResponse
 	}
 
-	response, _ := Handler(*theRequest)
-	assert.NotEmpty(t, response, "The response should not be empty")
-	assert.NotEmpty(t, response.Body.OutputSpeech, "There should be output speech")
-}
-
-func TestHandlePopularDealIntent(t *testing.T) {
-	theRequest := &alexa.Request{
-		Version: "1.0",
-		Session: alexa.Session{
-			Application: alexa.Application{
-				ApplicationID: os.Getenv("AppARN"),
-			},
-		},
-		Body: alexa.ReqBody{
-			Type: "IntentRequest",
-			Intent: alexa.Intent{
-				Name:  "PopularDealIntent",
-				Slots: nil,
-			},
-		},
-		Context: alexa.Context{},
-	}
-
-	response, _ := Handler(*theRequest)
-	assert.NotEmpty(t, response, "The response should not be empty")
-	assert.NotEmpty(t, response.Body.OutputSpeech, "There should be output speech")
-}
-
-func TestHandleHelpIntent(t *testing.T) {
-	theRequest := &alexa.Request{
-		Version: "1.0",
-		Session: alexa.Session{
-			Application: alexa.Application{
-				ApplicationID: os.Getenv("AppARN"),
-			},
-		},
-		Body: alexa.ReqBody{
-			Type: "IntentRequest",
-			Intent: alexa.Intent{
-				Name:  "AMAZON.HelpIntent",
-				Slots: nil,
-			},
-		},
-		Context: alexa.Context{},
-	}
-	response, _ := Handler(*theRequest)
-	assert.NotEmpty(t, response, "The response should not be empty", false)
-	assert.NotEmpty(t, response.Body.OutputSpeech, "There should be output speech")
-}
-
-func TestHandleDealResumeDetails(t *testing.T) {
-	sessionAttrData := make(map[string]interface{})
-	sessionAttrData["dataToSave"] = "some data"
-
-	theRequest := &alexa.Request{
-		Version: "1.0",
-		Session: alexa.Session{
-			Application: alexa.Application{
-				ApplicationID: os.Getenv("AppARN"),
-			},
-			Attributes: sessionAttrData,
-		},
-		Body: alexa.ReqBody{
-			Type: "IntentRequest",
-			Intent: alexa.Intent{
-				Name:  "AMAZON.YesIntent",
-				Slots: nil,
-			},
-		},
-		Context: alexa.Context{},
-	}
-	response, _ := Handler(*theRequest)
-	assert.NotEmpty(t, response, "The response should not be empty", false)
-	assert.NotEmpty(t, response.Body.OutputSpeech, "There should be output speech")
-}
-
-func TestHandleNoIntent(t *testing.T) {
-
-	theRequest := &alexa.Request{
-		Version: "1.0",
-		Session: alexa.Session{
-			Application: alexa.Application{
-				ApplicationID: os.Getenv("AppARN"),
-			},
-		},
-		Body: alexa.ReqBody{
-			Type: "IntentRequest",
-			Intent: alexa.Intent{
-				Name:  "AMAZON.NoIntent",
-				Slots: nil,
-			},
-		},
-		Context: alexa.Context{},
-	}
-	response, _ := Handler(*theRequest)
-	assert.NotEmpty(t, response, "The response should not be empty", false)
-	assert.NotEmpty(t, response.Body.OutputSpeech, "There should be output speech")
-}
-
-func TestHandleStopIntent(t *testing.T) {
-	theRequest := &alexa.Request{
-		Version: "1.0",
-		Session: alexa.Session{
-			Application: alexa.Application{
-				ApplicationID: os.Getenv("AppARN"),
-			},
-		},
-		Body: alexa.ReqBody{
-			Type: "IntentRequest",
-			Intent: alexa.Intent{
-				Name:  "AMAZON.StopIntent",
-				Slots: nil,
-			},
-		}, Context: alexa.Context{},
-	}
-	response, _ := Handler(*theRequest)
-	assert.NotEmpty(t, response, "The response should not be empty", false)
-	assert.NotEmpty(t, response.Body.OutputSpeech, "There should be output speech")
-}
-func TestHandleCancelIntent(t *testing.T) {
-
-	theRequest := &alexa.Request{
-		Version: "1.0",
-		Session: alexa.Session{
-			Application: alexa.Application{
-				ApplicationID: os.Getenv("AppARN"),
-			},
-		},
-		Body: alexa.ReqBody{
-			Type: "IntentRequest",
-			Intent: alexa.Intent{
-				Name:  "AMAZON.CancelIntent",
-				Slots: nil,
-			},
-		}, Context: alexa.Context{},
-	}
-	response, _ := Handler(*theRequest)
-	assert.NotEmpty(t, response, "The response should not be empty", false)
-	assert.NotEmpty(t, response.Body.OutputSpeech, "There should be output speech")
-}
-
-func TestHandleFallback(t *testing.T) {
-
-	theRequest := &alexa.Request{
-		Version: "1.0",
-		Session: alexa.Session{
-			Application: alexa.Application{
-				ApplicationID: os.Getenv("AppARN"),
-			},
-		},
-		Body: alexa.ReqBody{
-			Type: "IntentRequest",
-			Intent: alexa.Intent{
-				Name:  "AMAZON.FallbackIntent",
-				Slots: nil,
-			},
-		}, Context: alexa.Context{},
-	}
-	response, _ := Handler(*theRequest)
-	assert.NotEmpty(t, response, "The response should not be empty", false)
-	assert.NotEmpty(t, response.Body.OutputSpeech, "There should be output speech")
 }
 
 func TestNotAuthorized(t *testing.T) {
 
-	theRequest := &alexa.Request{
+	theNotAuthRequest := &alexa.Request{
 		Version: "1.0",
 		Session: alexa.Session{
 			Application: alexa.Application{
@@ -223,132 +68,62 @@ func TestNotAuthorized(t *testing.T) {
 		},
 		Context: alexa.Context{},
 	}
-	response, _ := Handler(*theRequest)
+	response, _ := Handler(*theNotAuthRequest)
 	assert.NotEmpty(t, response, "The response should not be empty", false)
-	assert.Contains(t, response.Body.OutputSpeech.SSML, "please enable and use this skill through an approved alexa device.")
+	assert.Contains(t, response.Body.OutputSpeech.SSML, "Please enable and use this skill through an approved Alexa device.")
 }
 
-func TestHandleHelpIntentWithAPL(t *testing.T) {
+func TestIntentDispatcher(t *testing.T) {
 
-	context := alexa.Context{
-		System: alexa.System{
-			Application: alexa.Application{},
-			User:        alexa.User{},
-			Device: alexa.Device{
-				DeviceID: "JustATest",
-				SupportedInterfaces: alexa.SupportedInterfaces{
-					APL: alexa.APL{
-						alexa.Runtime{
-							MaxVersion: "1.3",
-						},
-					},
-				},
-			},
-			APIEndPoint:    "",
-			APIAccessToken: "",
-		},
+	fmt.Println("Test Launch Handler through IntentDispatcher")
+	response, _ := Handler(theRequest)
+	assert.Equal(t, theResponse, response)
+
+	fmt.Println("Test Help Handler through IntentDispatcher")
+	theRequest.Body.Type = "Intent"
+	theRequest.Body.Intent = alexa.Intent{
+		Name:  "AMAZON.HelpIntent",
+		Slots: nil,
 	}
+	response, _ = Handler(theRequest)
+	assert.Equal(t, theResponse, response)
 
-	theRequest := &alexa.Request{
-		Version: "1.0",
-		Session: alexa.Session{
-			Application: alexa.Application{
-				ApplicationID: os.Getenv("AppARN"),
-			},
-		},
-		Body: alexa.ReqBody{
-			Type: "IntentRequest",
-			Intent: alexa.Intent{
-				Name:  "AMAZON.HelpIntent",
-				Slots: nil,
-			},
-		},
-		Context: context,
+	fmt.Println("Test Cancel Stop Handler through IntentDispatcher")
+	theRequest.Body.Type = "Intent"
+	theRequest.Body.Intent = alexa.Intent{
+		Name:  "AMAZON.StopIntent",
+		Slots: nil,
 	}
+	response, _ = Handler(theRequest)
+	assert.Equal(t, theResponse, response)
 
-	response, _ := Handler(*theRequest)
-	assert.NotEmpty(t, response, "The response should not be empty", false)
-	assert.NotEmpty(t, response.Body.OutputSpeech, "There should be output speech")
-}
-
-func TestHandleLaunchIntentWithAPL(t *testing.T) {
-
-	context := alexa.Context{
-		System: alexa.System{
-			Application: alexa.Application{},
-			User:        alexa.User{},
-			Device: alexa.Device{
-				DeviceID: "JustATest",
-				SupportedInterfaces: alexa.SupportedInterfaces{
-					APL: alexa.APL{
-						alexa.Runtime{
-							MaxVersion: "1.3",
-						},
-					},
-				},
-			},
-			APIEndPoint:    "",
-			APIAccessToken: "",
-		},
+	fmt.Println("Test Artist Handler through IntentDispatcher")
+	theRequest.Body.Type = "Intent"
+	theRequest.Body.Intent = alexa.Intent{
+		Name:  "ArtistIntent",
+		Slots: nil,
 	}
+	response, _ = Handler(theRequest)
+	assert.Equal(t, theResponse, response)
 
-	theRequest := &alexa.Request{
-		Version: "1.0",
-		Session: alexa.Session{
-			Application: alexa.Application{
-				ApplicationID: os.Getenv("AppARN"),
-			},
-		},
-		Body: alexa.ReqBody{
-			Type: "LaunchRequest",
-		},
-		Context: context,
+	fmt.Println("Test FallbackHandler through IntentDispatcher")
+	theRequest.Body.Type = "Intent"
+	theRequest.Body.Intent = alexa.Intent{
+		Name:  "AMAZON.FallbackIntent",
+		Slots: nil,
 	}
+	response, _ = Handler(theRequest)
+	assert.Equal(t, theResponse, response)
 
-	response, _ := Handler(*theRequest)
-	assert.NotEmpty(t, response, "The response should not be empty", false)
-	assert.NotEmpty(t, response.Body.OutputSpeech, "There should be output speech")
-}
-
-func TestHandlePopularDealsIntentWithAPL(t *testing.T) {
-
-	context := alexa.Context{
-		System: alexa.System{
-			Application: alexa.Application{},
-			User:        alexa.User{},
-			Device: alexa.Device{
-				DeviceID: "JustATest",
-				SupportedInterfaces: alexa.SupportedInterfaces{
-					APL: alexa.APL{
-						alexa.Runtime{
-							MaxVersion: "1.3",
-						},
-					},
-				},
-			},
-			APIEndPoint:    "",
-			APIAccessToken: "",
-		},
+	fmt.Println("Test No Handler through IntentDispatcher")
+	theRequest.Body.Type = "Intent"
+	theRequest.Body.Intent = alexa.Intent{
+		Name:  "AMAZON.NoIntent",
+		Slots: nil,
 	}
+	response, _ = Handler(theRequest)
+	assert.Equal(t, theResponse, response)
 
-	theRequest := &alexa.Request{
-		Version: "1.0",
-		Session: alexa.Session{
-			Application: alexa.Application{
-				ApplicationID: os.Getenv("AppARN"),
-			},
-		},
-		Body: alexa.ReqBody{
-			Type: "IntentRequest",
-			Intent: alexa.Intent{
-				Name:  "PopularDealIntent",
-				Slots: nil,
-			},
-		},
-		Context: context,
-	}
+	//todo: test YES Handler
 
-	response, _ := Handler(*theRequest)
-	assert.NotEmpty(t, response, "The response should not be empty", false)
-	assert.NotEmpty(t, response.Body.OutputSpeech, "There should be output speech")
 }

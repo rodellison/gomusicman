@@ -44,7 +44,7 @@ type APLDocument struct {
 //are completely customized and unique for each skill.
 //We need the properties to be accessible so as to dynamically populate them when responding to user requests
 type APLDataSources struct {
-	TemplateData TemplateData `json:"TemplateData,omitempty"`
+	TemplateData TemplateData `json:"musicManTemplateData,omitempty"` //NOTE!, make sure to use the correct json: value if different than templateData!
 }
 
 type TemplateData struct {
@@ -54,27 +54,28 @@ type TemplateData struct {
 	Transformers []interface{}     `json:"transformers,omitempty"`
 }
 
+//These properties need to match up to those in the DataSources section of the json apl_template_export.json file
 type APLDataProperties struct {
-	Title                 string   `json:"Title,omitempty"`
-	LayoutToUse           string   `json:"LayoutToUse,omitempty"`
-	Locale                string   `json:"Locale,omitempty"`
-	HeadingText           string   `json:"HeadingText,omitempty"`
-	HintString            string   `json:"HintString,omitempty"`
-	HomeImageUrlXSMALL    string   `json:"HomeImageUrlXSMALL,omitempty"`
-	HomeImageUrlXLARGE    string   `json:"HomeImageUrlXLARGE,omitempty"`
-	HelpImageUrlXSMALL    string   `json:"HelpImageUrlXSMALL,omitempty"`
-	HelpImageUrlXLARGE    string   `json:"HelpImageUrlXLARGE,omitempty"`
-	ItemsImageUrlXSMALL   string   `json:"ItemsImageUrlXSMALL,omitempty"`
-	ItemsImageUrlXLARGE   string   `json:"ItemsImageUrlXLARGE,omitempty"`
-	LogoUrl               string   `json:"LogoUrl,omitempty"`
-	GeneralSquareImageUrl string   `json:"GeneralSquareImageUrl,omitempty"`
-	ItemsText             []string `json:"ItemsText,omitempty"`
+	Title                 string   `json:"Title"`
+	LayoutToUse           string   `json:"LayoutToUse"`
+	HeadingText           string   `json:"HeadingText"`
+	Locale                string   `json:"Locale"`
+	HintString            string   `json:"HintString"`
+	EventImageUrl         string   `json:"EventImageUrl"`
+	BackgroundImageUrl    string   `json:"BackgroundImageUrl"`
+	LogoUrl               string   `json:"LogoUrl"`
+	GeneralSquareImageUrl string   `json:"GeneralSquareImageUrl"`
+	SongkickLogoUrl       string   `json:"SongkickLogoUrl"`
+	EventText             []string `json:"EventText"`
+	PhotoAttribution      string   `json:"PhotoAttribution"`
+	BackgroundImages      []string `json:"BackgroundImages"`
 }
 
 //This struct will be used to define a container type for passing custom display data to the NewTell/Ask..Response functions
 //It should be customized as needed to support the data needs of the dynamically updated Datasource APL properties
 type CustomDataToDisplay struct {
-	ItemsListContent []string
+	ItemsListContent  []string
+	ArtistVenueImgURL string
 }
 
 //CreateAPLDocAndData is a function that loads json input that contains the APL template for the Skill. Once loaded, the content
@@ -88,7 +89,7 @@ func CreateAPLDocAndData() (*APLDocumentAndData, error) {
 	}
 
 	//apl_template_export.json is the name given to the file downloaded from the Alexa Developer console (Display tool)
-	fmt.Println("Opening APLTemplate JSON file: ", FileToRead)
+	//fmt.Println("Opening APLTemplate JSON file: ", FileToRead)
 	file, err := ioutil.ReadFile(FileToRead)
 	if err != nil {
 		fmt.Println("Error reading APL json file: ", err.Error())
