@@ -78,6 +78,7 @@ workflows:
       # On approval of the `hold` job, any successive job that requires the `hold` job will run.
       # In this case, a user is manually triggering the deploy job.
       - deploy:
+          context: AWS_DEPLOYMENT # has AWS Key ID and Secret ENVS
           requires:
             - hold
           filters:  #ONLY deploy when the workflow is running based on a change to the MASTER branch.. i.e. a pull request merge has occurred, and NOT just a push to any remote development branch..
