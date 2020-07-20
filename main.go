@@ -11,7 +11,7 @@ import (
 
 var (
 	//These var definitions to help with Mock testing
-	StopCancelHandler, HelpHandler, LaunchHandler func(alexa.Request) alexa.Response
+	StopCancelHandler, HelpHandler, LaunchHandler, NoHandler func(alexa.Request) alexa.Response
 	ArtistHandler, VenueHandler, LocationHandler  func(alexa.Request, bool, models.SessionData) alexa.Response
 )
 
@@ -23,6 +23,7 @@ func init() {
 	ArtistHandler = handlers.HandleArtistIntent
 	VenueHandler = handlers.HandleVenueIntent
 	LocationHandler = handlers.HandleLocationIntent
+	NoHandler = handlers.HandleNoIntent
 }
 
 //Centralized function to steer incoming alexa requests to the appropriate handler function
@@ -63,7 +64,7 @@ func IntentDispatcher(request alexa.Request) alexa.Response {
 		}
 
 	case alexa.NoIntent:
-		response = HelpHandler(request)
+		response = NoHandler(request)
 	case alexa.StopIntent:
 		response = StopCancelHandler(request)
 	case alexa.CancelIntent:

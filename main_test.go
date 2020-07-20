@@ -48,6 +48,9 @@ func init() {
 	VenueHandler = func(alexa.Request, bool, models.SessionData) alexa.Response {
 		return theResponse
 	}
+	NoHandler = func(alexa.Request) alexa.Response {
+		return theResponse
+	}
 
 }
 
