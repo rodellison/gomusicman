@@ -55,6 +55,7 @@ jobs:
           command: |
             sudo npm i -g serverless
             npm install
+            sudo apt-get update
             sudo apt-get install -f awscli  #Note! - AWS creds need to be setup at CircleCI to deploy
       - run:
           name: Deploy application
