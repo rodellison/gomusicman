@@ -2,7 +2,9 @@ package common
 
 import (
 	"github.com/stretchr/testify/assert"
+	"strconv"
 	"testing"
+	"time"
 )
 
 func TestConvertDate(t *testing.T) {
@@ -38,7 +40,10 @@ func TestGetDatesForCalendarMinMax(t *testing.T) {
 	month := "December"
 	minDate, maxDate := GetDatesForCalendarMinMax(month)
 
-	assert.Equal(t, "2020-12-01", minDate)
-	assert.Equal(t, "2020-12-31", maxDate)
+	time := time.Now()
+	year := time.Year()   // type int
+
+	assert.Equal(t, strconv.Itoa(year) + "-12-01", minDate)
+	assert.Equal(t, strconv.Itoa(year) + "-12-31", maxDate)
 
 }
