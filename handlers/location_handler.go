@@ -26,6 +26,7 @@ func init() {
 const (
 	LOCATION_CITY_SLOT    = "city"
 	LOCATION_STATE_SLOT   = "state"
+	LOCATION_REGION_SLOT   = "region"
 	LOCATION_COUNTRY_SLOT = "country"
 	LOCATION_MONTH_SLOT   = "month"
 	LOCATION_INTENT       = "LocationIntent"
@@ -141,11 +142,13 @@ func HandleLocationIntent(request alexa.Request, resumingPrior bool, sessionData
 	var cardTextContent string
 	var strLocationCity string
 	var strLocationState string
+	var strLocationRegion string
 	var strLocationCountry string
 	var strLocationMonth string
 	var slotData map[string]alexa.Slot
 	var strLocationCitySlot alexa.Slot
 	var strLocationStateSlot alexa.Slot
+	var strLocationRegionSlot alexa.Slot
 	var strLocationCountrySlot alexa.Slot
 	var strLocationMonthSlot alexa.Slot
 
@@ -161,6 +164,8 @@ func HandleLocationIntent(request alexa.Request, resumingPrior bool, sessionData
 		strLocationCity = strings.Title(strLocationCitySlot.Value)
 		strLocationStateSlot = slotData[LOCATION_STATE_SLOT]
 		strLocationState = strings.Title(strLocationStateSlot.Value)
+		strLocationRegionSlot = slotData[LOCATION_REGION_SLOT]
+		strLocationRegion = strings.Title(strLocationRegionSlot.Value)
 		strLocationCountrySlot = slotData[LOCATION_COUNTRY_SLOT]
 		strLocationCountry = strings.Title(strLocationCountrySlot.Value)
 		strLocationMonthSlot = slotData[LOCATION_MONTH_SLOT]
@@ -168,7 +173,14 @@ func HandleLocationIntent(request alexa.Request, resumingPrior bool, sessionData
 
 		var err error
 		strLocationCity = strings.Replace(strLocationCity, ",", "", -1) //remove random occurrence of a captured , char
+
+		if strLocationRegion != "" {
+			//This attempts to resolve the issue for English (IN), which is the only locale that does not provide for AMAZON.US_STATE
+			//Region in many cases includes states, so if the language is English (IN), and Region slot data is present, use it as data for State
+			strLocationState = strLocationRegion
+		}
 		fmt.Println("incoming slot info: City: " + strLocationCity + ", State: " + strLocationState + ", Country: " + strLocationCountry + ", Month: " + strLocationMonth)
+
 
 		//---- Perform the Fetch of Event Data for the Artist
 		eventData, err = fetchLocationData(strLocationCity, strLocationState, strLocationCountry, strLocationMonth)
@@ -255,9 +267,13 @@ func HandleLocationIntent(request alexa.Request, resumingPrior bool, sessionData
 				customDisplayData.ItemsListContent[idx] = item
 				cardTextContent += item + "\n"
 			}
-			primarySSMLText.Say("There are no additional events. Please ask another question like, Who is playing at Staples Center, Where is Iron Maiden playing, or What is happening in Fort Lauderdale, Florida. Say Cancel to exit. ")
+
+			var textToSay = "Please ask another question like, Who is coming to Staples Center,  Where is Iron Maiden playing, or What is happening in Fort Lauderdale, Florida. Say Cancel to exit. "
+			primarySSMLText.Say("There are no additional events.")
 			primarySSMLText.Pause("1000")
+			primarySSMLText.Say(textToSay)
 			cardTextContent += "There are no additional events.\n"
+			repromptSSMLText.Say(textToSay)
 
 			titleString = "Upcoming events near " + strLocationCity
 			if strLocationState != "" {
@@ -282,7 +298,7 @@ func HandleLocationIntent(request alexa.Request, resumingPrior bool, sessionData
 				primarySSMLText.Pause("1000")
 				primarySSMLText.Say("Please re-ask your question similar to this, What is happening in Las Vegas, Nevada.")
 				primarySSMLText.Pause("500")
-				repromptSSMLText.Say("lease re-ask your question similar to this, What is happening in Las Vegas, Nevada.")
+				repromptSSMLText.Say("Please re-ask your question similar to this, What is happening in Las Vegas, Nevada.")
 				repromptSSMLText.Pause("1000")
 			} else {
 				primarySSMLText.Say("If you would like to ask another question, try one of these:")

@@ -202,9 +202,16 @@ func HandleVenueIntent(request alexa.Request, resumingPrior bool, sessionData mo
 				customDisplayData.ItemsListContent[idx] = item
 				cardTextContent += item + "\n"
 			}
-			primarySSMLText.Say("There are no additional events. Please ask another question like, Who is coming to Staples Center,  Where is Iron Maiden playing, or What is happening in Fort Lauderdale, Florida. Say Cancel to exit. ")
+			var textToSay = "Please ask another question like, Who is coming to Staples Center,  Where is Iron Maiden playing, or What is happening in Fort Lauderdale, Florida. Say Cancel to exit. "
+			primarySSMLText.Say("There are no additional events.")
+			primarySSMLText.Pause("1000")
+			primarySSMLText.Say(textToSay)
 			primarySSMLText.Pause("1000")
 			cardTextContent += "There are no additional events.\n"
+
+			repromptSSMLText.Say(textToSay)
+			repromptSSMLText.Pause("1000")
+
 
 			titleString = "Upcoming events at " + strings.Title(strVenue)
 
@@ -218,7 +225,10 @@ func HandleVenueIntent(request alexa.Request, resumingPrior bool, sessionData mo
 			primarySSMLText.Say("If you would like to ask another question, try one of these:")
 			primarySSMLText.Pause("500")
 			primarySSMLText.Say("Who is coming to Staples Center,  Where is Iron Maiden playing, or What is happening in Fort Lauderdale, Florida. You can say Cancel to exit. ")
-			primarySSMLText.Pause("1000")
+
+			repromptSSMLText.Say("Try asking a question like one of these:")
+			repromptSSMLText.Pause("500")
+			repromptSSMLText.Say("Who is coming to Staples Center,  Where is Iron Maiden playing, or What is happening in Fort Lauderdale, Florida. You can say Cancel to exit. ")
 
 			titleString = "There are no upcoming events at " + strings.Title(strVenue)
 

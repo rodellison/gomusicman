@@ -25,6 +25,7 @@ provider:
   # The default is 6 seconds. Note: API Gateway current maximum is 30 seconds
   #timeout: 10
   memorySize: 512 # Overwrite the default memory size. Default is 1024
+  versionFunctions: false
   logRetentionInDays: 30 # Set the default RetentionInDays for a CloudWatch LogGroup
   #extra role permissions required for skill to operate
   iamRoleStatements:

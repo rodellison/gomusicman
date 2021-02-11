@@ -44,7 +44,7 @@ func HandleHelpIntent(request alexa.Request) alexa.Response {
 			ItemsListContent: make([]string, 3),
 		}
 		customDisplayData.ItemsListContent[0] = "Alexa, Ask The Music Man:"
-		customDisplayData.ItemsListContent[1] = "WHO is coming to {venue}<br/>WHERE is {artist} playing<br/>WHAT is happening in {city}<br/>"
+		customDisplayData.ItemsListContent[1] = "WHO is coming to {venue}<br/>WHERE is {artist} playing<br/>WHAT is happening in {city} + {state} or {country}<br/>"
 		customDisplayData.ItemsListContent[2] = "You can also add 'in {month}' to any of the requests above for specific dates"
 		customDisplayData.ArtistVenueImgURL = "NA"
 
