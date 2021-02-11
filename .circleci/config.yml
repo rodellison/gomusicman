@@ -54,7 +54,8 @@ jobs:
           name: Install Serverless and AWS dependencies
           command: |
             sudo npm i -g serverless
-            sudo apt-get install --fix-missing awscli  #Note! - AWS creds need to be setup at CircleCI to deploy
+            sudo apt-get update –fix-missing
+            sudo apt-get install -f awscli  #Note! - AWS creds need to be setup at CircleCI to deploy
       - run:
           name: Deploy application
           command: |
